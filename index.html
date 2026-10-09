@@ -1,697 +1,2641 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Antrenman">
-<meta name="theme-color" content="#0f172a">
+<meta name="theme-color" content="#F2F2F7">
 <link rel="manifest" href="/manifest.webmanifest">
-<title>Antrenman Programı</title>
+<title>Antrenman</title>
 <style>
+  :root {
+    --bg: #F2F2F7;
+    --surface: #FFFFFF;
+    --surface-2: #E5E5EA;
+    --surface-3: #D1D1D6;
+    --separator: rgba(60, 60, 67, 0.12);
+    --separator-strong: rgba(60, 60, 67, 0.24);
+    --text: #000000;
+    --text-2: #3C3C43;
+    --text-3: #8E8E93;
+    --accent: #007AFF;
+    --accent-soft: rgba(0, 122, 255, 0.12);
+    --success: #34C759;
+    --success-soft: rgba(52, 199, 89, 0.12);
+    --warning: #FF9500;
+    --danger: #FF3B30;
+    --focus: #FFCC00;
+    --focus-soft: rgba(255, 204, 0, 0.15);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+    --radius-lg: 16px;
+    --radius-md: 12px;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  [data-theme="dark"] {
+    --bg: #000000;
+    --surface: #1C1C1E;
+    --surface-2: #2C2C2E;
+    --surface-3: #3A3A3C;
+    --separator: rgba(255, 255, 255, 0.09);
+    --separator-strong: rgba(255, 255, 255, 0.18);
+    --text: #FFFFFF;
+    --text-2: #EBEBF5;
+    --text-3: #8E8E93;
+    --accent: #0A84FF;
+    --accent-soft: rgba(10, 132, 255, 0.18);
+    --success: #30D158;
+    --success-soft: rgba(48, 209, 88, 0.18);
+    --warning: #FF9F0A;
+    --danger: #FF453A;
+    --focus: #FFD60A;
+    --focus-soft: rgba(255, 214, 10, 0.18);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body {
     margin: 0; padding: 0;
     min-height: 100vh;
-    background: #0f172a;
-    color: #f1f5f9;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.4;
     -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
+    overscroll-behavior-y: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
-  body {
-    background:
-      radial-gradient(1200px 600px at 50% -10%, rgba(99,102,241,0.18), transparent 60%),
-      radial-gradient(800px 400px at 100% 100%, rgba(236,72,153,0.08), transparent 60%),
-      #0f172a;
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  /* Durum çubuğu (çentik) alanını kaydırırken örter */
-  body::after {
-    content: '';
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    height: env(safe-area-inset-top);
-    background: #0f172a;
-    z-index: 25;
-    pointer-events: none;
-  }
+  button, input { font-family: inherit; }
+  button { cursor: pointer; -webkit-appearance: none; appearance: none; }
 
-  /* ===== HERO ===== */
-  .hero {
-    text-align: center;
-    padding: calc(env(safe-area-inset-top) + 2.2rem) 1.25rem 1rem;
-    position: relative;
-  }
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 50%;
-    width: 280px; height: 280px;
-    transform: translateX(-50%);
-    background: radial-gradient(circle, rgba(99,102,241,0.35), transparent 70%);
-    filter: blur(50px);
-    z-index: 0;
-    pointer-events: none;
-  }
-  .hero > * { position: relative; z-index: 1; }
-  .date-line {
-    font-size: 0.72rem;
-    color: #94a3b8;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin-bottom: 0.55rem;
-    font-weight: 500;
-  }
-  .hero-title {
-    font-size: 1.85rem;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    background: linear-gradient(135deg, #ffffff 30%, #94a3b8);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin: 0;
-    line-height: 1.1;
-  }
-  .ring-wrap { display: flex; justify-content: center; margin: 1.35rem 0 0.25rem; }
-  .ring { width: 72px; height: 72px; position: relative; }
-  .ring svg { transform: rotate(-90deg); display: block; }
-  .ring-text {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.9rem; font-weight: 700;
-    color: #f1f5f9;
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* ===== TABS ===== */
-  .tabs {
-    display: flex;
-    gap: 0.5rem;
-    overflow-x: auto;
-    padding: 1.2rem 1.25rem 1.35rem;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    position: sticky;
-    top: env(safe-area-inset-top);
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    z-index: 20;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.08);
-  }
-  .tabs::-webkit-scrollbar { display: none; }
-  .tab {
-    flex: 0 0 auto;
-    padding: 0.55rem 1rem;
-    border-radius: 100px;
-    background: rgba(30, 41, 59, 0.6);
-    color: #94a3b8;
-    font-size: 0.82rem;
-    font-weight: 600;
-    border: 1px solid rgba(148, 163, 184, 0.1);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-    user-select: none;
-    display: inline-flex;
+  .onboard {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    z-index: 2000;
+    display: none;
     align-items: center;
-    white-space: nowrap;
+    justify-content: center;
+    padding: 1.5rem;
+    overflow-y: auto;
   }
-  .tab:active { transform: scale(0.96); }
-  .tab.active {
-    color: #fff;
-    background: var(--tab-color, #6366f1);
-    border-color: transparent;
-    box-shadow:
-      0 0 0 1px var(--tab-color, #6366f1),
-      0 10px 30px -10px var(--tab-color, #6366f1);
-    transform: translateY(-1px);
+  .onboard.show { display: flex; animation: fadeIn 0.35s ease; }
+  .onboard-card { width: 100%; max-width: 360px; }
+  .onboard-logo {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem;
   }
-  .tab .dot {
-    display: inline-block;
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: #fff;
-    margin-left: 0.45rem;
-    opacity: 0;
-    transform: scale(0);
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  .onboard-logo svg { width: 28px; height: 28px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .onboard-card h1 {
+    margin: 0 0 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: -0.03em;
   }
-  .tab.done .dot { opacity: 1; transform: scale(1); }
-
-  /* ===== PANELS ===== */
-  .panel { display: none; padding: 0 1.25rem 3rem; }
-  .panel.active {
+  .onboard-card > p {
+    margin: 0 0 2rem;
+    font-size: 0.9rem;
+    color: var(--text-3);
+    line-height: 1.5;
+    text-align: center;
+  }
+  .field { margin-bottom: 0.75rem; }
+  .field label {
     display: block;
-    animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    font-size: 0.72rem;
+    color: var(--text-3);
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+    padding-left: 0.15rem;
   }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(14px); }
-    to { opacity: 1; transform: translateY(0); }
+  .field input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 1rem;
+    -webkit-appearance: none;
+    appearance: none;
   }
+  .field input:focus { outline: none; border-color: var(--accent); }
+  .field input[type="date"]::-webkit-calendar-picker-indicator { opacity: 0.5; cursor: pointer; }
+  .field-hint {
+    font-size: 0.72rem;
+    color: var(--text-3);
+    margin-top: 0.4rem;
+    padding-left: 0.15rem;
+    line-height: 1.4;
+  }
+  .btn-primary {
+    width: 100%;
+    padding: 0.9rem;
+    border-radius: var(--radius-md);
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1rem;
+  }
+  .btn-primary:active { opacity: 0.8; transform: scale(0.99); }
 
-  .day-head {
+  .app-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    padding: calc(var(--safe-top) + 0.75rem) 1rem 0.75rem;
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 0.5px solid var(--separator);
+  }
+  .header-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 0.25rem 0 0.85rem;
+    gap: 0.5rem;
   }
-  .day-name {
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: #94a3b8;
-    font-weight: 600;
-  }
-  .day-progress {
-    font-size: 0.78rem;
-    color: #94a3b8;
-    font-variant-numeric: tabular-nums;
-    font-weight: 600;
-    transition: color 0.3s;
-  }
-  .day-progress.done { color: #10b981; }
-
-  .bar {
-    height: 3px;
-    background: rgba(148, 163, 184, 0.1);
-    border-radius: 100px;
+  .header-info { flex: 1; min-width: 0; }
+  .header-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
     overflow: hidden;
-    margin-bottom: 1.35rem;
+    text-overflow: ellipsis;
   }
-  .bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--day-color, #6366f1), #ec4899);
-    border-radius: 100px;
-    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 0 14px var(--day-color, #6366f1);
+  .header-sub {
+    font-size: 0.78rem;
+    color: var(--text-3);
+    margin-top: 0.1rem;
+    font-weight: 400;
   }
+  .header-actions { display: flex; gap: 0.35rem; align-items: center; flex: 0 0 auto; }
+  .icon-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    padding: 0;
+  }
+  .icon-btn:active { background: var(--accent-soft); transform: scale(0.92); }
+  .icon-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-  /* ===== EXERCISE CARD ===== */
-  .ex {
+  .segmented-wrap { padding: 0.75rem 1rem 1rem; }
+  .segmented {
+    display: flex;
+    background: var(--surface-2);
+    border-radius: 10px;
+    padding: 2px;
+    gap: 2px;
+  }
+  .segmented button {
+    flex: 1;
+    padding: 0.5rem 0.35rem;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    font-size: 0.76rem;
+    font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 0.9rem;
-    padding: 0.95rem 1rem;
-    margin-bottom: 0.5rem;
-    background: rgba(30, 41, 59, 0.55);
-    border: 1px solid rgba(148, 163, 184, 0.1);
-    border-radius: 14px;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
+    justify-content: center;
+    letter-spacing: -0.01em;
+  }
+  .segmented button.active {
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    font-weight: 600;
+  }
+
+  .view { display: none; padding: 0 1rem 5rem; }
+  .view.active { display: block; animation: fadeUp 0.35s cubic-bezier(0.25, 0.1, 0.25, 1); }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .date-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.25rem 1rem;
+    gap: 0.5rem;
+  }
+  .date-arrow {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: none;
+    color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    padding: 0;
+  }
+  .date-arrow:active { background: var(--surface-2); transform: scale(0.92); }
+  .date-arrow svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .date-center { flex: 1; text-align: center; min-width: 0; }
+  .date-main {
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
     overflow: hidden;
-    animation: slideIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    text-overflow: ellipsis;
   }
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateX(-10px); }
-    to { opacity: 1; transform: translateX(0); }
+  .date-sub {
+    font-size: 0.75rem;
+    color: var(--text-3);
+    margin-top: 0.1rem;
+    font-weight: 400;
   }
-  .ex::before {
+  .date-sub .today-action { color: var(--accent); font-weight: 500; }
+
+  .session-block { margin-bottom: 1rem; }
+  .btn-session {
+    width: 100%;
+    padding: 0.9rem;
+    border-radius: var(--radius-md);
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  .btn-session:active { transform: scale(0.99); opacity: 0.9; }
+  .btn-session.start { background: var(--accent); color: #fff; }
+  .btn-session.end {
+    background: var(--surface);
+    color: var(--danger);
+    border: 1px solid var(--separator);
+  }
+  .btn-session svg { width: 16px; height: 16px; fill: currentColor; }
+  .btn-session.end svg { fill: none; stroke: currentColor; stroke-width: 2; }
+  .session-running { display: flex; gap: 0.5rem; }
+  .timer-display {
+    flex: 0 0 auto;
+    min-width: 100px;
+    padding: 0.9rem 1rem;
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    border: 1px solid var(--separator);
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .session-done {
+    padding: 0.9rem 1rem;
+    border-radius: var(--radius-md);
+    background: var(--success-soft);
+    color: var(--success);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .meta-tile {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--separator);
+  }
+  .meta-tile svg { width: 16px; height: 16px; stroke: var(--text-3); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto; }
+  .meta-tile label { font-size: 0.78rem; color: var(--text-3); font-weight: 500; }
+  .meta-tile input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: right;
+    padding: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .meta-tile input:focus { outline: none; }
+  .meta-tile .unit { font-size: 0.75rem; color: var(--text-3); font-weight: 500; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0 0.25rem 0.5rem;
+  }
+  .section-title {
+    font-size: 0.75rem;
+    color: var(--text-3);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .section-count {
+    font-size: 0.8rem;
+    color: var(--text-3);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .section-count.done { color: var(--success); font-weight: 600; }
+
+  .focus-card {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    padding: 0.75rem 1rem;
+    background: var(--focus-soft);
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: var(--text-2);
+  }
+  .focus-card .star {
+    flex: 0 0 auto;
+    color: var(--focus);
+    font-size: 1rem;
+    line-height: 1.2;
+    margin-top: 0.05rem;
+  }
+  .focus-card strong {
+    color: var(--text);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.15rem;
+    font-size: 0.82rem;
+  }
+
+  .ex-list {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--separator);
+  }
+  .ex-row {
+    padding: 1rem 1rem 0.9rem;
+    border-bottom: 0.5px solid var(--separator);
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .ex-row:last-child { border-bottom: none; }
+  .ex-row.focus::before {
     content: '';
     position: absolute;
-    left: 0; top: 0; bottom: 0;
+    left: 0; top: 12px; bottom: 12px;
     width: 3px;
-    background: var(--day-color, #6366f1);
-    opacity: 0;
-    transition: opacity 0.3s;
+    border-radius: 0 3px 3px 0;
+    background: var(--focus);
   }
-  .ex:active { transform: scale(0.98); }
-  .ex.done {
-    background: rgba(15, 23, 42, 0.55);
-    border-color: rgba(16, 185, 129, 0.2);
-  }
-  .ex.done::before { background: #10b981; opacity: 1; }
-  .ex.done .name {
-    text-decoration: line-through;
-    text-decoration-color: rgba(148, 163, 184, 0.5);
-    color: #64748b;
-  }
-  .ex.done .reps { color: #64748b; }
+  .ex-row.focus.done::before { background: var(--success); }
 
-  .check {
-    flex: 0 0 auto;
-    width: 26px; height: 26px;
-    border-radius: 50%;
-    border: 2px solid rgba(148, 163, 184, 0.3);
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  .ex-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.7rem;
   }
-  .check svg {
-    width: 14px; height: 14px;
-    stroke: #fff;
-    stroke-width: 3.5;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    fill: none;
-    stroke-dasharray: 24;
-    stroke-dashoffset: 24;
-    transition: stroke-dashoffset 0.4s cubic-bezier(0.65, 0, 0.35, 1) 0.05s;
-  }
-  .ex.done .check {
-    background: #10b981;
-    border-color: #10b981;
-    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
-    transform: scale(1.05);
-  }
-  .ex.done .check svg { stroke-dashoffset: 0; }
-
-  .ex-body { flex: 1; min-width: 0; }
-  .name {
+  .ex-name {
     font-size: 0.95rem;
     font-weight: 500;
-    color: #f1f5f9;
-    line-height: 1.25;
-    transition: color 0.3s;
+    color: var(--text);
+    line-height: 1.3;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
   }
-  .reps {
-    font-size: 0.75rem;
-    color: #94a3b8;
-    margin-top: 0.2rem;
-    font-variant-numeric: tabular-nums;
-    transition: color 0.3s;
+  .ex-row.done .ex-name {
+    color: var(--text-3);
+    text-decoration: line-through;
+    text-decoration-color: var(--text-3);
   }
-
-  /* ===== NOTES ===== */
-  .notes {
-    margin-top: 1.35rem;
-    padding: 1.1rem 1.2rem;
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.5));
-    border: 1px solid rgba(148, 163, 184, 0.1);
-    border-radius: 14px;
-    font-size: 0.8rem;
-    color: #94a3b8;
-    line-height: 1.7;
-  }
-  .notes h4 {
-    color: #f1f5f9;
-    font-size: 0.72rem;
-    letter-spacing: 0.15em;
+  .focus-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.12rem 0.45rem;
+    border-radius: 100px;
+    background: var(--focus-soft);
+    color: var(--text);
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
     text-transform: uppercase;
-    margin: 0 0 0.75rem;
-    font-weight: 600;
   }
-  .notes ul { margin: 0; padding-left: 1.1rem; }
-  .notes li { margin-bottom: 0.3rem; }
-  .notes li::marker { color: var(--day-color, #6366f1); }
+  .ex-reps {
+    font-size: 0.82rem;
+    color: var(--text-3);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+  .ex-row.done .ex-reps { opacity: 0.6; }
 
-  /* ===== RESET ===== */
-  .reset {
-    display: block;
-    width: 100%;
-    margin-top: 1.5rem;
-    padding: 0.85rem;
+  .sets-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .sets { display: flex; gap: 0.45rem; flex-wrap: wrap; }
+  .set {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid var(--separator-strong);
     background: transparent;
-    color: #f87171;
-    border: 1px solid rgba(248, 113, 113, 0.2);
-    border-radius: 12px;
-    font-size: 0.8rem;
+    color: var(--text-3);
+    font-size: 0.7rem;
     font-weight: 600;
-    font-family: inherit;
-    cursor: pointer;
-    transition: all 0.25s;
+    font-variant-numeric: tabular-nums;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: all 0.2s cubic-bezier(0.34, 1.3, 0.64, 1);
   }
-  .reset:active {
-    background: rgba(248, 113, 113, 0.1);
-    transform: scale(0.98);
+  .set:active { transform: scale(0.9); }
+  .set.done {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    transform: scale(1.02);
+  }
+  .ex-row.done .set.done {
+    background: var(--success);
+    border-color: var(--success);
   }
 
-  /* ===== CONFETTI ===== */
-  .celebration {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 999;
+  .weight-btn {
+    flex: 0 0 auto;
+    padding: 0.4rem 0.75rem;
+    border-radius: 100px;
+    background: var(--surface-2);
+    color: var(--text-3);
+    border: none;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    letter-spacing: -0.01em;
+  }
+  .weight-btn:active { transform: scale(0.94); }
+  .weight-btn.has-weight {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .weight-btn .plus {
+    font-size: 0.85rem;
+    font-weight: 600;
+    opacity: 0.7;
+  }
+
+  .rest-card {
+    padding: 3rem 1.5rem;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--separator);
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+  .rest-card .moon { font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.6; }
+  .rest-card h3 { margin: 0 0 0.35rem; font-size: 1rem; font-weight: 600; }
+  .rest-card p { margin: 0; font-size: 0.85rem; color: var(--text-3); line-height: 1.5; }
+
+  .notes-section { margin-top: 1.5rem; }
+  .notes-section > h3 {
+    font-size: 0.75rem;
+    color: var(--text-3);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 0.5rem 0.25rem;
+  }
+  .notes-list {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--separator);
+    padding: 0.9rem 1rem;
+    font-size: 0.82rem;
+    color: var(--text-2);
+    line-height: 1.55;
+  }
+  .notes-list ul { margin: 0; padding-left: 1.1rem; }
+  .notes-list li { margin-bottom: 0.25rem; }
+  .notes-list li:last-child { margin-bottom: 0; }
+  .notes-list li::marker { color: var(--text-3); }
+
+  .stats-card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--separator);
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  .stats-card > h3 {
+    font-size: 0.72rem;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+    margin: 0 0 0.75rem;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  .stat-tile {
+    background: var(--surface-2);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .stat-value {
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    line-height: 1.1;
+  }
+  .stat-label {
+    font-size: 0.72rem;
+    color: var(--text-3);
+    font-weight: 500;
+  }
+  .donut-wrap { display: flex; align-items: center; gap: 1rem; }
+  .donut { width: 116px; height: 116px; flex: 0 0 auto; }
+  .donut-legend {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column; gap: 0.4rem;
+  }
+  .donut-legend-item {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 0.5rem; font-size: 0.78rem;
+  }
+  .donut-legend-label {
+    display: flex; align-items: center; gap: 0.4rem;
+    color: var(--text-2); font-weight: 500;
+  }
+  .donut-legend-dot { width: 10px; height: 10px; border-radius: 3px; flex: 0 0 auto; }
+  .donut-legend-value {
+    color: var(--text-3); font-weight: 500;
+    font-variant-numeric: tabular-nums; font-size: 0.72rem; white-space: nowrap;
+  }
+  .stats-empty {
+    text-align: center; color: var(--text-3);
+    font-size: 0.82rem; padding: 1.5rem 0;
+  }
+
+  .card-cta {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    width: 100%;
+    padding: 1rem 1.1rem;
+    background: linear-gradient(135deg, var(--accent), #5856D6);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-lg);
+    margin-bottom: 1rem;
+    text-align: left;
+    box-shadow: 0 8px 20px -8px rgba(0, 122, 255, 0.5);
+  }
+  [data-theme="dark"] .card-cta {
+    background: linear-gradient(135deg, var(--accent), #5E5CE6);
+    box-shadow: 0 8px 20px -8px rgba(10, 132, 255, 0.4);
+  }
+  .card-cta:active { transform: scale(0.99); opacity: 0.92; }
+  .card-cta-icon {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex; align-items: center; justify-content: center;
+    flex: 0 0 auto;
+  }
+  .card-cta-icon svg {
+    width: 20px; height: 20px;
+    stroke: #fff; fill: none; stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .card-cta-text { flex: 1; min-width: 0; }
+  .card-cta-title {
+    font-size: 0.95rem; font-weight: 600;
+    letter-spacing: -0.01em; margin-bottom: 0.15rem;
+  }
+  .card-cta-sub { font-size: 0.75rem; opacity: 0.85; font-weight: 400; }
+  .card-cta-arrow {
+    width: 16px; height: 16px;
+    stroke: #fff; fill: none; stroke-width: 2.5;
+    stroke-linecap: round; stroke-linejoin: round;
+    opacity: 0.7;
+  }
+
+  .cal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.5rem 0.25rem 1rem; gap: 0.5rem;
+  }
+  .cal-month { flex: 1; text-align: center; font-size: 1rem; font-weight: 600; }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.25rem;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--separator);
+    padding: 0.75rem 0.6rem 1rem;
+  }
+  .cal-header {
+    text-align: center; font-size: 0.68rem; font-weight: 500;
+    color: var(--text-3); padding: 0.4rem 0;
+  }
+  .cal-cell {
+    aspect-ratio: 1; border-radius: 8px; background: transparent; border: none;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 0.82rem; font-weight: 500; color: var(--text);
+    position: relative; padding: 0; font-variant-numeric: tabular-nums;
+  }
+  .cal-cell:active { transform: scale(0.92); }
+  .cal-cell.empty { pointer-events: none; }
+  .cal-cell.future { color: var(--text-3); opacity: 0.35; pointer-events: none; }
+  .cal-cell.today { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+  .cal-cell.complete { background: var(--success-soft); color: var(--success); font-weight: 600; }
+  .cal-cell.partial { background: var(--surface-2); color: var(--text); }
+  .cal-cell.today.complete { background: var(--success-soft); color: var(--success); }
+  .cal-cell.today.partial { background: var(--accent-soft); color: var(--accent); }
+  .cal-dot {
+    position: absolute; bottom: 4px;
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--accent);
+  }
+  .cal-cell.complete .cal-dot { background: var(--success); }
+  .cal-cell.partial .cal-dot { background: var(--warning); }
+  .cal-cell.today .cal-dot { background: currentColor; }
+
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;
+    padding: 0 0.5rem; font-size: 0.75rem; color: var(--text-3);
+  }
+  .legend-item { display: flex; align-items: center; gap: 0.4rem; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .legend-dot.complete { background: var(--success); }
+  .legend-dot.partial { background: var(--warning); }
+  .legend-dot.pending { background: var(--accent); }
+
+  .settings-group {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--separator);
     overflow: hidden;
+    margin-bottom: 1.25rem;
   }
-  .confetti {
-    position: absolute;
-    width: 8px; height: 8px;
-    border-radius: 2px;
-    top: -20px;
-    animation: confettiFall 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  .settings-group-title {
+    font-size: 0.72rem; color: var(--text-3); font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 0 0.25rem 0.5rem;
   }
-  @keyframes confettiFall {
-    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  .settings-row {
+    padding: 0.9rem 1rem;
+    border-bottom: 0.5px solid var(--separator);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 0.75rem; font-size: 0.92rem;
+    background: transparent;
+    border-left: none; border-right: none; border-top: none;
+    width: 100%; text-align: left; color: var(--text);
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-row:active { background: var(--surface-2); }
+  .settings-row.danger { color: var(--danger); }
+  .settings-row.primary { color: var(--accent); font-weight: 600; }
+  .settings-row svg {
+    width: 16px; height: 16px; stroke: var(--text-3); fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    flex: 0 0 auto;
+  }
+  .settings-row .label-wrap {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column; gap: 0.15rem;
+  }
+  .settings-row .sub { font-size: 0.75rem; color: var(--text-3); font-weight: 400; }
+  .settings-row input[type="text"],
+  .settings-row input[type="date"] {
+    flex: 1; text-align: right;
+    background: transparent; border: none;
+    color: var(--text); font-size: 0.92rem; padding: 0;
+  }
+  .settings-row input:focus { outline: none; }
+  .settings-row input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0.4; cursor: pointer;
   }
 
-  /* ===== TOAST ===== */
+  .info-row {
+    padding: 0.9rem 1rem;
+    border-bottom: 0.5px solid var(--separator);
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 0.92rem;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-row .value {
+    color: var(--text-3); font-weight: 500; font-variant-numeric: tabular-nums;
+  }
+  .info-row .value.strong { color: var(--text); font-weight: 600; }
+  .info-row .value.fire { color: var(--warning); font-weight: 600; }
+
+  .warn-banner {
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-md);
+    background: var(--surface-2);
+    color: var(--text-2);
+    font-size: 0.82rem; font-weight: 500;
+    display: flex; align-items: center; gap: 0.6rem;
+    margin-bottom: 1rem; line-height: 1.4;
+  }
+  .warn-banner.danger { background: rgba(255, 59, 48, 0.1); color: var(--danger); }
+  [data-theme="dark"] .warn-banner.danger { background: rgba(255, 69, 58, 0.15); }
+
   .toast {
     position: fixed;
-    bottom: calc(env(safe-area-inset-bottom) + 2rem); left: 50%;
-    transform: translateX(-50%) translateY(calc(120px + env(safe-area-inset-bottom)));
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: #fff;
-    padding: 0.85rem 1.35rem;
+    bottom: calc(1.5rem + var(--safe-bottom));
+    left: 50%;
+    transform: translateX(-50%) translateY(140%);
+    background: var(--text);
+    color: var(--bg);
+    padding: 0.75rem 1.25rem;
     border-radius: 100px;
-    font-size: 0.88rem;
-    font-weight: 600;
-    box-shadow: 0 20px 40px -10px rgba(16, 185, 129, 0.55);
-    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    font-size: 0.85rem; font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
     z-index: 1000;
     pointer-events: none;
     white-space: nowrap;
+    max-width: calc(100vw - 2rem);
+    overflow: hidden; text-overflow: ellipsis;
   }
+  [data-theme="dark"] .toast { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6); }
   .toast.show { transform: translateX(-50%) translateY(0); }
+
+  .celebration {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 999; overflow: hidden;
+  }
+  .confetti {
+    position: absolute;
+    width: 6px; height: 6px; border-radius: 50%;
+    top: -10px;
+    animation: confettiFall 1.6s cubic-bezier(0.3, 0.6, 0.6, 1) forwards;
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(110vh); opacity: 0; }
+  }
+
+  .weight-modal {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 3500;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .weight-modal.show { display: flex; animation: fadeIn 0.2s ease; }
+  .weight-sheet {
+    width: 100%;
+    max-width: 480px;
+    max-height: 72vh;
+    background: var(--bg);
+    border-radius: 24px 24px 0 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    padding-bottom: var(--safe-bottom);
+  }
+  .weight-head {
+    padding: 1rem 1.25rem 0.75rem;
+    border-bottom: 0.5px solid var(--separator);
+    flex: 0 0 auto;
+  }
+  .weight-head h3 {
+    margin: 0 0 0.15rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .weight-head p {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--text-3);
+    font-weight: 400;
+  }
+  .weight-list {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.35rem 0;
+  }
+  .weight-option {
+    width: 100%;
+    padding: 0.9rem 1.25rem;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 1.02rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    letter-spacing: -0.01em;
+    transition: background-color 0.1s;
+  }
+  .weight-option:active { background: var(--surface-2); }
+  .weight-option.selected {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .weight-option.selected::after {
+    content: '✓';
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+  .weight-option.empty-option {
+    color: var(--text-3);
+    font-weight: 500;
+    font-size: 0.92rem;
+  }
+  .weight-close {
+    padding: 0.7rem 1.1rem 1rem;
+    border-top: 0.5px solid var(--separator);
+    flex: 0 0 auto;
+  }
+  .weight-close button {
+    width: 100%;
+    padding: 0.85rem;
+    border-radius: var(--radius-md);
+    border: none;
+    background: var(--surface-2);
+    color: var(--text);
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+  .weight-close button:active { opacity: 0.85; }
+
+  .card-modal {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 3000;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .card-modal.show { display: flex; animation: fadeIn 0.25s ease; }
+  .card-modal-inner {
+    width: 100%;
+    max-width: 480px;
+    max-height: 92vh;
+    background: var(--bg);
+    border-radius: 24px 24px 0 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+    padding-bottom: var(--safe-bottom);
+  }
+  .card-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.1rem 0.85rem;
+    border-bottom: 0.5px solid var(--separator);
+    flex: 0 0 auto;
+  }
+  .card-modal-title { font-size: 1rem; font-weight: 700; letter-spacing: -0.02em; }
+  .card-modal-close {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: none;
+    color: var(--text-2);
+    display: flex; align-items: center; justify-content: center;
+    padding: 0;
+  }
+  .card-modal-close:active { transform: scale(0.9); }
+  .card-modal-close svg {
+    width: 16px; height: 16px;
+    stroke: currentColor; fill: none; stroke-width: 2.2;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .card-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.1rem 1.1rem 1rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  .card-date-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-bottom: 0.4rem;
+  }
+  .card-date-row .field { margin-bottom: 0; }
+  .card-preview-wrap {
+    margin-top: 1rem;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--surface-2);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  }
+  [data-theme="dark"] .card-preview-wrap {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  }
+  .card-preview { display: block; width: 100%; height: auto; }
+  .card-modal-actions {
+    display: flex;
+    gap: 0.6rem;
+    padding: 0.85rem 1.1rem 1rem;
+    border-top: 0.5px solid var(--separator);
+    flex: 0 0 auto;
+  }
+  .btn-action {
+    flex: 1;
+    padding: 0.85rem;
+    border-radius: var(--radius-md);
+    border: none;
+    font-size: 0.92rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    letter-spacing: -0.01em;
+  }
+  .btn-action:active { transform: scale(0.98); opacity: 0.9; }
+  .btn-action.share {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 4px 14px -4px rgba(0, 122, 255, 0.5);
+  }
+  .btn-action.download {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--separator);
+  }
+  .btn-action svg {
+    width: 16px; height: 16px;
+    stroke: currentColor; fill: none; stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
 </style>
 </head>
 <body>
 
-<header class="hero">
-  <div class="date-line" id="dateLine"></div>
-  <h1 class="hero-title">Antrenman Programı</h1>
-  <div class="ring-wrap">
-    <div class="ring">
-      <svg width="72" height="72" viewBox="0 0 72 72">
-        <circle cx="36" cy="36" r="28" stroke="rgba(148,163,184,0.15)" stroke-width="5" fill="none"/>
-        <circle id="weekRing" cx="36" cy="36" r="28" stroke="url(#ringGrad)" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="175.9" stroke-dashoffset="175.9" style="transition: stroke-dashoffset 0.8s cubic-bezier(0.16,1,0.3,1);"/>
-        <defs>
-          <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#6366f1"/>
-            <stop offset="100%" stop-color="#ec4899"/>
-          </linearGradient>
-        </defs>
-      </svg>
-      <div class="ring-text" id="ringText">0%</div>
+<div class="onboard" id="onboard">
+  <div class="onboard-card">
+    <div class="onboard-logo">
+      <svg viewBox="0 0 24 24"><path d="M6.5 6.5h11v11h-11z"/><path d="M3 9v6M21 9v6"/></svg>
+    </div>
+    <h1>Antrenman</h1>
+    <p>Programı kişiselleştirmek için birkaç bilgi</p>
+    <div class="field">
+      <label>İsim Soyisim</label>
+      <input type="text" id="nameInput" placeholder="Ahmet Yılmaz" autocomplete="name">
+    </div>
+    <div class="field">
+      <label>Programın İlk Pazartesi'si</label>
+      <input type="date" id="startDateInput">
+      <div class="field-hint">Hangi günü seçersen seç, o haftanın Pazartesi'sine ayarlanır.</div>
+    </div>
+    <button class="btn-primary" id="startBtn">Başla</button>
+  </div>
+</div>
+
+<header class="app-header">
+  <div class="header-row">
+    <div class="header-info">
+      <div class="header-name" id="headerName">Antrenman</div>
+      <div class="header-sub" id="headerSub">Programı takip et</div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="themeToggle" title="Tema">
+        <svg id="themeIcon" viewBox="0 0 24 24"></svg>
+      </button>
+      <button class="icon-btn" id="undoBtn" title="Geri Al">
+        <svg viewBox="0 0 24 24"><path d="M3 7v6h6"/><path d="M3 13a9 9 0 1 0 3-7.7L3 8"/></svg>
+      </button>
+      <button class="icon-btn" id="settingsBtn" title="Ayarlar">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
     </div>
   </div>
 </header>
 
-<nav class="tabs" id="tabs"></nav>
-<div id="panels"></div>
+<div class="segmented-wrap">
+  <div class="segmented">
+    <button class="active" data-view="workout">Antrenman</button>
+    <button data-view="calendar">Takvim</button>
+    <button data-view="stats">İstatistik</button>
+    <button data-view="settings">Ayarlar</button>
+  </div>
+</div>
+
+<div class="view active" id="view-workout">
+  <div class="date-nav">
+    <button class="date-arrow" id="prevDay"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="date-center">
+      <div class="date-main" id="dateMain"></div>
+      <div class="date-sub" id="dateSub"></div>
+    </div>
+    <button class="date-arrow" id="nextDay"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+  </div>
+  <div id="workoutContent"></div>
+</div>
+
+<div class="view" id="view-calendar">
+  <div class="cal-head">
+    <button class="date-arrow" id="prevMonth"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="cal-month" id="calMonthLabel"></div>
+    <button class="date-arrow" id="nextMonth"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+  </div>
+  <div class="cal-grid" id="calGrid"></div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot complete"></div> Tamamlandı</div>
+    <div class="legend-item"><div class="legend-dot partial"></div> Devam</div>
+    <div class="legend-item"><div class="legend-dot pending"></div> Başlanmadı</div>
+  </div>
+</div>
+
+<div class="view" id="view-stats">
+  <div id="statsContent"></div>
+</div>
+
+<div class="view" id="view-settings">
+  <div id="settingsContent"></div>
+</div>
+
+<div class="weight-modal" id="weightModal">
+  <div class="weight-sheet">
+    <div class="weight-head">
+      <h3>Ağırlık Seç</h3>
+      <p id="weightExerciseName">—</p>
+    </div>
+    <div class="weight-list" id="weightList"></div>
+    <div class="weight-close">
+      <button id="weightCloseBtn">Kapat</button>
+    </div>
+  </div>
+</div>
+
+<div class="card-modal" id="cardModal">
+  <div class="card-modal-inner">
+    <div class="card-modal-head">
+      <div class="card-modal-title">Antrenman Kartı</div>
+      <button class="card-modal-close" id="cardClose">
+        <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="card-modal-body">
+      <div class="card-date-row">
+        <div class="field">
+          <label>Başlangıç</label>
+          <input type="date" id="cardStart">
+        </div>
+        <div class="field">
+          <label>Bitiş</label>
+          <input type="date" id="cardEnd">
+        </div>
+      </div>
+      <button class="btn-primary" id="cardGenerate">Kartı Oluştur</button>
+      <div class="card-preview-wrap" id="cardPreviewWrap" style="display:none;">
+        <img class="card-preview" id="cardPreview" alt="Antrenman kartı">
+      </div>
+    </div>
+    <div class="card-modal-actions" id="cardActions" style="display:none;">
+      <button class="btn-action share" id="cardShare">
+        <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        Paylaş
+      </button>
+      <button class="btn-action download" id="cardDownload">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        İndir
+      </button>
+    </div>
+  </div>
+</div>
 
 <div class="celebration" id="celebration"></div>
 <div class="toast" id="toast"></div>
 
 <script>
 (function () {
-  var program = {
+  "use strict";
+
+  var PROGRAM = {
     "Pazartesi": {
-      color: "#6366f1",
+      focus: "Bench Press",
+      focusNote: "Bugünün ana hareketi. Ağırlığı form bozulmadan son 1-2 tekrar zorlanacak şekilde seç, set aralarını 2-3 dk tut.",
       ex: [
-        ["Bench Press", "4x6-8"],
-        ["Row", "4x6"],
-        ["Squat (box/kontrollü)", "3x6"],
-        ["OHP", "3x8"],
-        ["Lat Pulldown", "3x10"],
-        ["Hanging Knee Raise", "3x10"]
+        { name: "Bench Press", sets: 4, reps: "6-8" },
+        { name: "Row", sets: 4, reps: "6" },
+        { name: "Hip Thrust", sets: 3, reps: "8-10" },
+        { name: "OHP", sets: 3, reps: "8" },
+        { name: "Lat Pulldown", sets: 3, reps: "10" },
+        { name: "Hanging Knee Raise", sets: 3, reps: "10" }
       ]
     },
     "Salı": {
-      color: "#10b981",
       ex: [
-        ["Barfiks + Şınav", "5 set (2+4)"],
-        ["Plate Halo", "3x10"],
-        ["Plate Speed Punch", "3x10"],
-        ["Plate Burpee", "3x8"],
-        ["Plate Swing", "3x12"],
-        ["Plate Wood Chop", "3x10"],
-        ["Plate Russian Twist", "3x10"],
-        ["Kum Torbası", "3 tur x 2 dk"]
+        { name: "Barfiks + Şınav", sets: 5, reps: "2+4" },
+        { name: "Plate Halo", sets: 3, reps: "10" },
+        { name: "Plate Speed Punch", sets: 3, reps: "10" },
+        { name: "Plate Burpee", sets: 3, reps: "4" },
+        { name: "Plate Swing", sets: 3, reps: "12" },
+        { name: "Plate Wood Chop", sets: 3, reps: "10" },
+        { name: "Plate Russian Twist", sets: 3, reps: "10" },
+        { name: "Kum Torbası", sets: 3, reps: "2 dk" }
       ],
       notes: [{
-        title: "Kum Torbası Rutini (3 tur x 2 dk, tur arası 60 sn)",
-        items: [
-          "0-30 sn: Jab + Cross",
-          "30-60 sn: Hook + Uppercut",
-          "60-90 sn: Diz Vuruşu (Clinch)",
-          "90-120 sn: Serbest Kombinasyon"
-        ]
+        title: "Kum Torbası Rutini",
+        items: ["3 tur × 2 dk, tur arası 60 sn", "0-30 sn: Jab + Cross", "30-60 sn: Hook + Uppercut", "60-90 sn: Diz Vuruşu", "90-120 sn: Serbest Kombinasyon"]
       }]
     },
     "Çarşamba": {
-      color: "#f59e0b",
+      focus: "Squat",
+      focusNote: "Bugünün ana hareketi. Box veya kontrollü tempo, bel nötr. Ağırlığı form bozulmadan son 1-2 tekrar zorlanacak şekilde seç.",
       ex: [
-        ["Box Squat / Hip Thrust", "4x6-8"],
-        ["Incline Bench", "3x10"],
-        ["Landmine Row", "3x10"],
-        ["Lat Raise", "3x10"],
-        ["Face Pull", "3x15"],
-        ["Cable Crunch", "3x12"]
+        { name: "Squat", sets: 4, reps: "6-8" },
+        { name: "Incline Bench", sets: 3, reps: "10" },
+        { name: "Landmine Row", sets: 3, reps: "10" },
+        { name: "Lat Raise", sets: 3, reps: "10" },
+        { name: "Face Pull", sets: 3, reps: "15" },
+        { name: "Cable Crunch", sets: 3, reps: "12" }
       ]
     },
     "Perşembe": {
-      color: "#10b981",
       ex: [
-        ["Barfiks + Şınav", "5 set (2+4)"],
-        ["Plate Halo", "3x10"],
-        ["Plate Speed Punch", "3x10"],
-        ["Plate Burpee", "3x8"],
-        ["Plate Swing", "3x12"],
-        ["Plate Wood Chop", "3x10"],
-        ["Plate Russian Twist", "3x10"],
-        ["Kum Torbası", "3 tur x 2 dk"]
+        { name: "Barfiks + Şınav", sets: 5, reps: "2+4" },
+        { name: "Plate Halo", sets: 3, reps: "10" },
+        { name: "Plate Speed Punch", sets: 3, reps: "10" },
+        { name: "Plate Burpee", sets: 3, reps: "4" },
+        { name: "Plate Swing", sets: 3, reps: "12" },
+        { name: "Plate Wood Chop", sets: 3, reps: "10" },
+        { name: "Plate Russian Twist", sets: 3, reps: "10" },
+        { name: "Kum Torbası", sets: 3, reps: "2 dk" }
       ],
       notes: [{
-        title: "Kum Torbası Rutini (3 tur x 2 dk, tur arası 60 sn)",
-        items: [
-          "0-30 sn: Jab + Cross",
-          "30-60 sn: Hook + Uppercut",
-          "60-90 sn: Diz Vuruşu (Clinch)",
-          "90-120 sn: Serbest Kombinasyon"
-        ]
+        title: "Kum Torbası Rutini",
+        items: ["3 tur × 2 dk, tur arası 60 sn", "0-30 sn: Jab + Cross", "30-60 sn: Hook + Uppercut", "60-90 sn: Diz Vuruşu", "90-120 sn: Serbest Kombinasyon"]
       }]
     },
     "Cuma": {
-      color: "#a855f7",
+      focus: "OHP",
+      focusNote: "Bugünün ana hareketi. Omuz ve core'u sıkı tut, bel nötr. Gövdeyi geriye yatırmadan bar'ı yukarı it.",
       ex: [
-        ["OHP", "4x6-8"],
-        ["Row", "4x6"],
-        ["Lat Pulldown / Pull-up", "3x8-10"],
-        ["Bench Press", "3x8"],
-        ["Plate Front Raise", "3x10"],
-        ["Hip Thrust / RDL", "3x8-10"],
-        ["Plank", "3x30-45 sn"]
+        { name: "OHP", sets: 4, reps: "6-8" },
+        { name: "Row", sets: 4, reps: "6" },
+        { name: "Lat Pulldown / Pull-up", sets: 3, reps: "8-10" },
+        { name: "Bench Press", sets: 3, reps: "8" },
+        { name: "Plate Front Raise", sets: 3, reps: "10" },
+        { name: "RDL", sets: 3, reps: "8-10" },
+        { name: "Plank", sets: 3, reps: "30-45 sn" }
       ]
     }
   };
 
-  var generalNotes = {
-    title: "Genel Notlar",
-    items: [
-      "Isınma: Bisiklet 5 dk + dinamik açma 2 dk",
-      "Set arası: Büyük hareketler 2-3 dk, izole 60-90 sn",
-      "Plate devresinde hareketler arası 30-45 sn",
-      "Squat: Box veya kontrollü tempo. Rahatsız ederse Hip Thrust'a çevir",
-      "Kum torbası: bel nötr, rotasyon kalçadan gelsin"
-    ]
+  var DAY_SEQUENCE = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Dinlenme", "Dinlenme"];
+
+  var GENERAL_NOTES = [
+    "Isınma: Bisiklet 5 dk + dinamik açma 2 dk",
+    "Set arası: Büyük hareketler 2-3 dk, izole 60-90 sn",
+    "Plate devresinde hareketler arası 30-45 sn",
+    "Squat: Box veya kontrollü tempo, bel nötr",
+    "RDL: Hafif başla, kalça hinge, bel nötr, bar bacaklara yakın",
+    "Hip Thrust: Sırt bench'te, kalça yukarı, bel nötr",
+    "Kum torbası: bel nötr, rotasyon kalçadan gelsin"
+  ];
+
+  function getMuscleGroup(exName) {
+    var n = exName.toLowerCase();
+    if (n.indexOf("hanging knee raise") >= 0) return "Core";
+    if (n.indexOf("cable crunch") >= 0) return "Core";
+    if (n.indexOf("plank") >= 0) return "Core";
+    if (n.indexOf("russian twist") >= 0) return "Core";
+    if (n.indexOf("wood chop") >= 0) return "Core";
+    if (n.indexOf("plate halo") >= 0) return "Core";
+    if (n.indexOf("bench") >= 0) return "İtme";
+    if (n.indexOf("ohp") >= 0) return "İtme";
+    if (n.indexOf("incline") >= 0) return "İtme";
+    if (n.indexOf("lat raise") >= 0) return "İtme";
+    if (n.indexOf("front raise") >= 0) return "İtme";
+    if (n.indexOf("şınav") >= 0) return "İtme";
+    if (n.indexOf("row") >= 0) return "Çekme";
+    if (n.indexOf("pulldown") >= 0) return "Çekme";
+    if (n.indexOf("pull-up") >= 0) return "Çekme";
+    if (n.indexOf("barfiks") >= 0) return "Çekme";
+    if (n.indexOf("face pull") >= 0) return "Çekme";
+    if (n.indexOf("squat") >= 0) return "Bacak";
+    if (n.indexOf("rdl") >= 0) return "Bacak";
+    if (n.indexOf("hip thrust") >= 0) return "Bacak";
+    if (n.indexOf("swing") >= 0) return "Bacak";
+    if (n.indexOf("burpee") >= 0) return "Kondisyon";
+    if (n.indexOf("speed punch") >= 0) return "Kondisyon";
+    if (n.indexOf("kum torbası") >= 0) return "Kondisyon";
+    return "Diğer";
+  }
+
+  var GROUP_COLORS = {
+    "İtme": "#FF3B30", "Çekme": "#007AFF", "Bacak": "#34C759",
+    "Core": "#FF9500", "Kondisyon": "#AF52DE"
   };
+  var GROUP_ORDER = ["İtme", "Çekme", "Bacak", "Core", "Kondisyon"];
 
-  var STORAGE_KEY = "antrenman_v2";
-  var state = {};
-  try { state = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch (e) { state = {}; }
+  var MONTHS_TR = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+  var DAYS_TR = ["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
+  var WEEK_HEADERS = ["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"];
+  var STORAGE_KEY = "antrenman_v4";
+  var THEME_KEY = "antrenman_theme";
 
-  var tabsEl = document.getElementById("tabs");
-  var panelsEl = document.getElementById("panels");
+  function getInitialTheme() {
+    try {
+      var saved = localStorage.getItem(THEME_KEY);
+      if (saved === "light" || saved === "dark") return saved;
+      if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) return "dark";
+    } catch (e) {}
+    return "light";
+  }
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", theme === "dark" ? "#000000" : "#F2F2F7");
+    updateThemeIcon(theme);
+  }
+  function updateThemeIcon(theme) {
+    var icon = document.getElementById("themeIcon");
+    if (!icon) return;
+    if (theme === "dark") {
+      icon.innerHTML = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>';
+    } else {
+      icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    }
+  }
+  function toggleTheme() {
+    var current = document.documentElement.getAttribute("data-theme") || "light";
+    applyTheme(current === "dark" ? "light" : "dark");
+  }
 
-  var now = new Date();
-  var dayNames = ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"];
-  var monthNames = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
-  document.getElementById("dateLine").textContent =
-    dayNames[now.getDay()] + ", " + now.getDate() + " " + monthNames[now.getMonth()];
+  var state = { name: "", startDate: null, sessions: {}, lastBackup: null };
+  try {
+    var saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) state = Object.assign(state, JSON.parse(saved));
+  } catch (e) {}
+
+  function toISO(d) {
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  function fromISO(s) {
+    var p = s.split("-");
+    return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+  }
+  function normalizeToMonday(d) {
+    var t = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    var day = t.getDay();
+    if (day === 0) t.setDate(t.getDate() - 6);
+    else t.setDate(t.getDate() - (day - 1));
+    return t;
+  }
+  function daysBetween(a, b) { return Math.round((b.getTime() - a.getTime()) / 86400000); }
+  function today() {
+    var d = new Date();
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+  function formatDateTR(d) {
+    return DAYS_TR[d.getDay()] + ", " + d.getDate() + " " + MONTHS_TR[d.getMonth()];
+  }
+  function formatDuration(sec) {
+    if (!sec && sec !== 0) return "--:--";
+    sec = Math.max(0, Math.floor(sec));
+    var h = Math.floor(sec / 3600);
+    var m = Math.floor((sec % 3600) / 60);
+    var s = sec % 60;
+    if (h > 0) return h + ":" + String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    return m + ":" + String(s).padStart(2, "0");
+  }
+  function formatDurationLong(sec) {
+    if (!sec) return "0 dk";
+    var h = Math.floor(sec / 3600);
+    var m = Math.floor((sec % 3600) / 60);
+    if (h > 0) return h + "s " + m + "dk";
+    return m + " dk";
+  }
+  function formatWeight(w) {
+    if (w == null) return null;
+    if (w === Math.floor(w)) return String(w);
+    return w.toFixed(1).replace(/\.0$/, "");
+  }
+  function formatVolume(kg) {
+    if (kg <= 0) return "0";
+    if (kg < 1000) return Math.round(kg) + " kg";
+    return (kg / 1000).toFixed(1).replace(".0", "") + " t";
+  }
+
+  (function migrateStartDate() {
+    if (!state.startDate) return;
+    var d = fromISO(state.startDate);
+    if (d.getDay() !== 1) {
+      state.startDate = toISO(normalizeToMonday(d));
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+    }
+  })();
+
+  function getProgramDayForDate(date) {
+    if (!state.startDate) return null;
+    var start = fromISO(state.startDate);
+    var diff = daysBetween(start, date);
+    var idx = ((diff % 7) + 7) % 7;
+    return DAY_SEQUENCE[idx];
+  }
+
+  function getSession(dateISO) { return state.sessions[dateISO] || {}; }
+  function getExerciseSets(dateISO, exName) {
+    var s = getSession(dateISO);
+    return (s.sets && s.sets[exName]) || [];
+  }
+  function getExerciseWeight(dateISO, exName) {
+    var s = getSession(dateISO);
+    if (!s.weights) return null;
+    var v = s.weights[exName];
+    return (v == null) ? null : v;
+  }
+  function ensureSession(dateISO) {
+    if (!state.sessions[dateISO]) state.sessions[dateISO] = { sets: {}, weights: {} };
+    if (!state.sessions[dateISO].sets) state.sessions[dateISO].sets = {};
+    if (!state.sessions[dateISO].weights) state.sessions[dateISO].weights = {};
+    return state.sessions[dateISO];
+  }
+  function toggleSet(dateISO, exName, setIdx, totalSets) {
+    pushUndo();
+    var s = ensureSession(dateISO);
+    if (!s.sets[exName]) s.sets[exName] = new Array(totalSets).fill(false);
+    s.sets[exName][setIdx] = !s.sets[exName][setIdx];
+    if (s.sets[exName].every(function (v) { return !v; })) delete s.sets[exName];
+    save();
+  }
+  function markAllSets(dateISO, exName, totalSets, value) {
+    pushUndo();
+    var s = ensureSession(dateISO);
+    s.sets[exName] = new Array(totalSets).fill(!!value);
+    if (!value) delete s.sets[exName];
+    save();
+  }
+  function setExerciseWeight(dateISO, exName, value) {
+    pushUndo();
+    var s = ensureSession(dateISO);
+    if (value == null) delete s.weights[exName];
+    else s.weights[exName] = value;
+    save();
+  }
+  function getDayProgress(dateISO, dayName) {
+    var prog = PROGRAM[dayName];
+    if (!prog) return { total: 0, done: 0, pct: 0 };
+    var total = 0, done = 0;
+    prog.ex.forEach(function (ex) {
+      total += ex.sets;
+      var arr = getExerciseSets(dateISO, ex.name);
+      for (var i = 0; i < ex.sets; i++) if (arr[i]) done++;
+    });
+    return { total: total, done: done, pct: total ? done / total : 0 };
+  }
+
+  function calculateStreak() {
+    if (!state.startDate) return 0;
+    var t = today();
+    var start = fromISO(state.startDate);
+    var d = new Date(t);
+    var todayName = getProgramDayForDate(t);
+    var todayISO = toISO(t);
+    var startFromToday = false;
+    if (todayName === "Dinlenme") startFromToday = true;
+    else {
+      var s = state.sessions[todayISO];
+      if (s && s.sets) {
+        for (var k in s.sets) { if (s.sets[k] && s.sets[k].some(Boolean)) { startFromToday = true; break; } }
+      }
+    }
+    if (!startFromToday) d.setDate(d.getDate() - 1);
+    var streak = 0;
+    var guard = 0;
+    while (guard++ < 365) {
+      if (d.getTime() < start.getTime()) break;
+      var iso = toISO(d);
+      var dayName = getProgramDayForDate(d);
+      if (dayName === "Dinlenme") { streak++; }
+      else {
+        var ss = state.sessions[iso];
+        var hasAny = false;
+        if (ss && ss.sets) {
+          for (var k2 in ss.sets) { if (ss.sets[k2] && ss.sets[k2].some(Boolean)) { hasAny = true; break; } }
+        }
+        if (hasAny) streak++;
+        else break;
+      }
+      d.setDate(d.getDate() - 1);
+    }
+    return streak;
+  }
+
+  function parseAvgReps(repsStr) {
+    if (!repsStr) return null;
+    var s = String(repsStr).trim();
+    var m = s.match(/^(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)$/);
+    if (m) return (parseFloat(m[1]) + parseFloat(m[2])) / 2;
+    m = s.match(/^(\d+)\s*\+\s*(\d+)$/);
+    if (m) return parseInt(m[1], 10) + parseInt(m[2], 10);
+    m = s.match(/^(\d+(?:\.\d+)?)$/);
+    if (m) return parseFloat(m[1]);
+    return null;
+  }
+
+  function collectRangeStats(startISO, endISO) {
+    var sessions = 0, setsCount = 0, duration = 0, calories = 0, volume = 0;
+    var groups = {};
+    GROUP_ORDER.forEach(function (g) { groups[g] = 0; });
+    for (var iso in state.sessions) {
+      if (iso < startISO || iso > endISO) continue;
+      var s = state.sessions[iso];
+      if (!s || !s.sets) continue;
+      var dayName = getProgramDayForDate(fromISO(iso));
+      if (!dayName || dayName === "Dinlenme") continue;
+      var prog = PROGRAM[dayName];
+      if (!prog) continue;
+      var hasAny = false;
+      prog.ex.forEach(function (ex) {
+        var arr = s.sets[ex.name] || [];
+        var doneCount = 0;
+        for (var i = 0; i < arr.length; i++) if (arr[i]) doneCount++;
+        if (doneCount > 0) {
+          hasAny = true;
+          setsCount += doneCount;
+          var grp = getMuscleGroup(ex.name);
+          if (groups[grp] !== undefined) groups[grp] += doneCount;
+          var w = s.weights && s.weights[ex.name];
+          if (w != null) {
+            var reps = parseAvgReps(ex.reps);
+            if (reps) volume += w * doneCount * reps;
+          }
+        }
+      });
+      if (hasAny) sessions++;
+      duration += s.duration || 0;
+      calories += s.calories || 0;
+    }
+    return {
+      sessions: sessions, sets: setsCount, duration: duration,
+      calories: calories, volume: volume, groups: groups
+    };
+  }
+
+  function getStats(period) {
+    var now = today();
+    var startISO;
+    if (period === "week") startISO = toISO(normalizeToMonday(now));
+    else if (period === "month") startISO = toISO(new Date(now.getFullYear(), now.getMonth(), 1));
+    else startISO = "0000-00-00";
+    return collectRangeStats(startISO, toISO(now));
+  }
+
+  var $ = function (s) { return document.querySelector(s); };
+  var onboard = $("#onboard");
+  var workoutContent = $("#workoutContent");
+  var calendarGrid = $("#calGrid");
+  var settingsContent = $("#settingsContent");
+  var statsContent = $("#statsContent");
+  var celebration = $("#celebration");
+  var toast = $("#toast");
+
+  var currentView = "workout";
+  var selectedDate = today();
+  var calendarMonth = new Date(today().getFullYear(), today().getMonth(), 1);
+  var timerInterval = null;
+  var undoStack = [];
+  var showToastTimer = null;
+
+  var weightPickerDateISO = null;
+  var weightPickerExName = null;
 
   function save() {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
-    updateWeekProgress();
   }
-  function key(day, idx) { return day + "_" + idx; }
+  function pushUndo() {
+    try {
+      undoStack.push(JSON.stringify(state.sessions));
+      if (undoStack.length > 20) undoStack.shift();
+    } catch (e) {}
+  }
+  function popUndo() {
+    if (!undoStack.length) return false;
+    try {
+      state.sessions = JSON.parse(undoStack.pop());
+      save();
+      return true;
+    } catch (e) { return false; }
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add("show");
+    clearTimeout(showToastTimer);
+    showToastTimer = setTimeout(function () { toast.classList.remove("show"); }, 2200);
+  }
 
-  // Build tabs & panels
-  Object.keys(program).forEach(function (day, i) {
-    var d = program[day];
+  function initOnboarding() {
+    if (state.startDate && state.name) return;
+    $("#startDateInput").value = toISO(today());
+    $("#nameInput").value = state.name || "";
+    onboard.classList.add("show");
+  }
+  $("#startBtn").addEventListener("click", function () {
+    var name = $("#nameInput").value.trim();
+    var date = $("#startDateInput").value;
+    if (!name) { showToast("İsim gerekli"); return; }
+    if (!date) { showToast("Tarih gerekli"); return; }
+    state.name = name;
+    state.startDate = toISO(normalizeToMonday(fromISO(date)));
+    save();
+    onboard.classList.remove("show");
+    render();
+  });
 
-    var tab = document.createElement("div");
-    tab.className = "tab" + (i === 0 ? " active" : "");
-    tab.dataset.day = day;
-    tab.style.setProperty("--tab-color", d.color);
-    tab.innerHTML = day + '<span class="dot"></span>';
-    tab.addEventListener("click", function () { switchDay(day); });
-    tabsEl.appendChild(tab);
+  document.getElementById("themeToggle").addEventListener("click", toggleTheme);
 
-    var panel = document.createElement("div");
-    panel.className = "panel" + (i === 0 ? " active" : "");
-    panel.dataset.day = day;
-    panel.style.setProperty("--day-color", d.color);
+  document.querySelectorAll(".segmented button").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      currentView = btn.dataset.view;
+      document.querySelectorAll(".segmented button").forEach(function (b) { b.classList.toggle("active", b === btn); });
+      document.querySelectorAll(".view").forEach(function (v) { v.classList.toggle("active", v.id === "view-" + currentView); });
+      if (currentView === "calendar") renderCalendar();
+      if (currentView === "stats") renderStats();
+      if (currentView === "settings") renderSettings();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
 
-    var head = document.createElement("div");
-    head.className = "day-head";
-    head.innerHTML = '<span class="day-name">' + day + ' Programı</span>' +
-                     '<span class="day-progress" data-progress>0/0</span>';
-    panel.appendChild(head);
+  $("#undoBtn").addEventListener("click", function () {
+    if (popUndo()) {
+      showToast("Geri alındı");
+      if (currentView === "workout") renderWorkout();
+      if (currentView === "calendar") renderCalendar();
+      if (currentView === "stats") renderStats();
+      renderHeader();
+    }
+  });
 
-    var bar = document.createElement("div");
-    bar.className = "bar";
-    var fill = document.createElement("div");
-    fill.className = "bar-fill";
-    fill.style.width = "0%";
-    bar.appendChild(fill);
-    panel.appendChild(bar);
+  $("#settingsBtn").addEventListener("click", function () {
+    document.querySelector('.segmented button[data-view="settings"]').click();
+  });
 
-    d.ex.forEach(function (item, idx) {
-      var name = item[0], reps = item[1];
-      var k = key(day, idx);
-      var done = !!state[k];
+  $("#prevDay").addEventListener("click", function () {
+    selectedDate = new Date(selectedDate.getTime() - 86400000);
+    renderWorkout();
+  });
+  $("#nextDay").addEventListener("click", function () {
+    selectedDate = new Date(selectedDate.getTime() + 86400000);
+    renderWorkout();
+  });
 
-      var ex = document.createElement("div");
-      ex.className = "ex" + (done ? " done" : "");
-      ex.style.animationDelay = (idx * 0.045) + "s";
-      ex.innerHTML =
-        '<div class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>' +
-        '<div class="ex-body"><div class="name">' + name + '</div>' +
-        '<div class="reps">' + reps + '</div></div>';
+  $("#prevMonth").addEventListener("click", function () {
+    calendarMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1, 1);
+    renderCalendar();
+  });
+  $("#nextMonth").addEventListener("click", function () {
+    calendarMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 1);
+    renderCalendar();
+  });
 
-      ex.addEventListener("click", function () { toggle(day, idx, ex, panel); });
-      panel.appendChild(ex);
+  function renderHeader() {
+    $("#headerName").textContent = state.name || "Antrenman";
+    var st = calculateStreak();
+    if (st > 0) $("#headerSub").textContent = "🔥 " + st + " gün streak";
+    else $("#headerSub").textContent = "Programı takip et";
+  }
+
+  function startTimer() {
+    stopTimer();
+    timerInterval = setInterval(function () {
+      var el = document.querySelector("[data-timer]");
+      if (!el) return;
+      var iso = el.dataset.timer;
+      var s = state.sessions[iso];
+      if (!s || !s.startedAt) return;
+      var elapsed = Math.floor((Date.now() - s.startedAt) / 1000);
+      el.textContent = formatDuration(elapsed);
+    }, 1000);
+  }
+  function stopTimer() {
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  }
+
+  function renderWorkout() {
+    var dateISO = toISO(selectedDate);
+    var dayName = getProgramDayForDate(selectedDate);
+
+    $("#dateMain").textContent = formatDateTR(selectedDate);
+    var subText;
+    if (dayName && dayName !== "Dinlenme") subText = dayName + " · " + relativeDay(selectedDate);
+    else subText = relativeDay(selectedDate);
+    var todayISO = toISO(today());
+    if (dateISO !== todayISO) subText += ' · <span class="today-action" id="goToday">Bugüne dön</span>';
+    $("#dateSub").innerHTML = subText;
+    var gt = document.getElementById("goToday");
+    if (gt) gt.addEventListener("click", function () { selectedDate = today(); renderWorkout(); });
+
+    if (!dayName || dayName === "Dinlenme") {
+      workoutContent.innerHTML = '<div class="rest-card"><div class="moon">🌙</div><h3>Dinlenme Günü</h3><p>Bugün antrenman yok.<br>İyi dinlen, yarın devam.</p></div>';
+      stopTimer();
+      return;
+    }
+
+    var prog = PROGRAM[dayName];
+    var session = getSession(dateISO);
+    var prog2 = getDayProgress(dateISO, dayName);
+    var isRunning = !!(session.startedAt && !session.endedAt);
+    var duration = session.duration || 0;
+    if (isRunning) duration = Math.floor((Date.now() - session.startedAt) / 1000);
+
+    var html = '';
+    html += '<div class="session-block">';
+    if (!session.startedAt) {
+      html += '<button class="btn-session start" id="startSessionBtn"><svg viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20"/></svg>Antrenmanı Başlat</button>';
+    } else if (isRunning) {
+      html += '<div class="session-running">';
+      html += '<div class="timer-display" data-timer="' + dateISO + '">' + formatDuration(duration) + '</div>';
+      html += '<button class="btn-session end" id="endSessionBtn"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12"/></svg>Bitir</button>';
+      html += '</div>';
+    } else {
+      html += '<div class="session-done">✓ ' + formatDuration(duration) + ' tamamlandı</div>';
+    }
+    html += '</div>';
+
+    html += '<div class="meta-row"><div class="meta-tile">';
+    html += '<svg viewBox="0 0 24 24"><path d="M12 2s4 4 4 8a4 4 0 0 1-8 0c0-2 1-3 1-3s1 2 3 2c0 0-2-4 0-7z"/></svg>';
+    html += '<label>Kalori</label>';
+    html += '<input type="number" id="calorieInput" inputmode="numeric" value="' + (session.calories || "") + '" placeholder="0">';
+    html += '<span class="unit">kcal</span>';
+    html += '</div></div>';
+
+    if (prog.focus && prog.focusNote) {
+      html += '<div class="focus-card"><span class="star">★</span>';
+      html += '<div><strong>Odak · ' + escapeHtml(prog.focus) + '</strong>' + escapeHtml(prog.focusNote) + '</div></div>';
+    }
+
+    html += '<div class="section-head"><span class="section-title">' + dayName + ' Programı</span>';
+    html += '<span class="section-count' + (prog2.done === prog2.total ? ' done' : '') + '">' + prog2.done + ' / ' + prog2.total + '</span></div>';
+
+    html += '<div class="ex-list">';
+    prog.ex.forEach(function (ex) {
+      var sets = getExerciseSets(dateISO, ex.name);
+      var doneCount = 0;
+      for (var j = 0; j < ex.sets; j++) if (sets[j]) doneCount++;
+      var exDone = doneCount === ex.sets;
+      var isFocus = prog.focus && prog.focus === ex.name;
+      var w = getExerciseWeight(dateISO, ex.name);
+      var hasW = w != null;
+
+      html += '<div class="ex-row' + (exDone ? ' done' : '') + (isFocus ? ' focus' : '') + '" data-ex="' + escapeHtml(ex.name) + '">';
+      html += '<div class="ex-top"><div class="ex-name">' + escapeHtml(ex.name);
+      if (isFocus) html += '<span class="focus-pill">★ Odak</span>';
+      html += '</div><div class="ex-reps">' + ex.sets + ' × ' + escapeHtml(ex.reps) + '</div></div>';
+      html += '<div class="sets-row">';
+      html += '<div class="sets">';
+      for (var k = 0; k < ex.sets; k++) {
+        html += '<button class="set' + (sets[k] ? ' done' : '') + '" data-set="' + k + '">' + (k + 1) + '</button>';
+      }
+      html += '</div>';
+      html += '<button class="weight-btn' + (hasW ? ' has-weight' : '') + '" data-weight-btn="1">';
+      if (hasW) {
+        html += formatWeight(w) + ' kg';
+      } else {
+        html += '<span class="plus">+</span> kg';
+      }
+      html += '</button>';
+      html += '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+
+    if (prog.notes) {
+      prog.notes.forEach(function (n) {
+        html += '<div class="notes-section"><h3>' + escapeHtml(n.title) + '</h3>';
+        html += '<div class="notes-list"><ul>';
+        n.items.forEach(function (x) { html += '<li>' + escapeHtml(x) + '</li>'; });
+        html += '</ul></div></div>';
+      });
+    }
+    html += '<div class="notes-section"><h3>Genel Notlar</h3>';
+    html += '<div class="notes-list"><ul>';
+    GENERAL_NOTES.forEach(function (x) { html += '<li>' + escapeHtml(x) + '</li>'; });
+    html += '</ul></div></div>';
+
+    workoutContent.innerHTML = html;
+
+    var startBtn = $("#startSessionBtn");
+    if (startBtn) startBtn.addEventListener("click", function () {
+      pushUndo();
+      var s = ensureSession(dateISO);
+      s.startedAt = Date.now();
+      save();
+      renderWorkout();
+    });
+    var endBtn = $("#endSessionBtn");
+    if (endBtn) endBtn.addEventListener("click", function () {
+      var s = ensureSession(dateISO);
+      if (s.startedAt) {
+        s.endedAt = Date.now();
+        s.duration = Math.round((s.endedAt - s.startedAt) / 1000);
+      }
+      save();
+      renderWorkout();
+      showToast("Antrenman kaydedildi · " + formatDuration(s.duration));
     });
 
-    if (d.notes) {
-      d.notes.forEach(function (n) {
-        var el = document.createElement("div");
-        el.className = "notes";
-        el.innerHTML = '<h4>' + n.title + '</h4><ul>' +
-          n.items.map(function (x) { return '<li>' + x + '</li>'; }).join("") +
-          '</ul>';
-        panel.appendChild(el);
+    var calInput = $("#calorieInput");
+    if (calInput) {
+      calInput.addEventListener("input", function () {
+        var s = ensureSession(dateISO);
+        var v = parseInt(calInput.value, 10);
+        s.calories = isNaN(v) ? null : v;
+        save();
       });
     }
 
-    var reset = document.createElement("button");
-    reset.className = "reset";
-    reset.textContent = "Bu günü sıfırla";
-    reset.addEventListener("click", function () {
-      if (!confirm(day + " günündeki tüm tikler silinsin mi?")) return;
-      d.ex.forEach(function (_, idx) { state[key(day, idx)] = false; });
-      save();
-      panel.querySelectorAll(".ex").forEach(function (e) { e.classList.remove("done"); });
-      updateDayProgress(day, panel);
-    });
-    panel.appendChild(reset);
+    workoutContent.querySelectorAll(".ex-row").forEach(function (exEl) {
+      var exName = exEl.dataset.ex;
+      var exDef = prog.ex.find(function (e) { return e.name === exName; });
+      var longPressTimer = null;
+      var longPressFired = false;
 
-    panelsEl.appendChild(panel);
-    updateDayProgress(day, panel);
+      exEl.querySelectorAll(".set").forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          if (longPressFired) { longPressFired = false; return; }
+          var idx = Number(btn.dataset.set);
+          toggleSet(dateISO, exName, idx, exDef.sets);
+          renderWorkout();
+          if (currentView === "calendar") renderCalendar();
+          if (currentView === "stats") renderStats();
+          checkCelebration(dateISO, dayName);
+          renderHeader();
+        });
+      });
+
+      var wBtn = exEl.querySelector("[data-weight-btn]");
+      if (wBtn) {
+        wBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          openWeightPicker(dateISO, exName);
+        });
+      }
+
+      function startPress(e) {
+        if (e.target.classList && (e.target.classList.contains("set") || e.target.classList.contains("weight-btn"))) return;
+        longPressFired = false;
+        longPressTimer = setTimeout(function () {
+          longPressFired = true;
+          var allDone = exEl.classList.contains("done");
+          markAllSets(dateISO, exName, exDef.sets, !allDone);
+          renderWorkout();
+          showToast(allDone ? "Setler temizlendi" : "Tüm setler işaretlendi");
+          renderHeader();
+        }, 550);
+      }
+      function cancelPress() {
+        if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+      }
+      exEl.addEventListener("touchstart", startPress, { passive: true });
+      exEl.addEventListener("touchend", cancelPress);
+      exEl.addEventListener("touchmove", cancelPress);
+      exEl.addEventListener("touchcancel", cancelPress);
+      exEl.addEventListener("mousedown", startPress);
+      exEl.addEventListener("mouseup", cancelPress);
+      exEl.addEventListener("mouseleave", cancelPress);
+    });
+
+    if (isRunning) startTimer();
+    else stopTimer();
+  }
+
+  function relativeDay(d) {
+    var t = today();
+    var diff = daysBetween(t, d);
+    if (diff === 0) return "Bugün";
+    if (diff === -1) return "Dün";
+    if (diff === 1) return "Yarın";
+    if (diff < -1) return Math.abs(diff) + " gün önce";
+    return diff + " gün sonra";
+  }
+
+  function openWeightPicker(dateISO, exName) {
+    weightPickerDateISO = dateISO;
+    weightPickerExName = exName;
+    $("#weightExerciseName").textContent = exName;
+    var current = getExerciseWeight(dateISO, exName);
+    renderWeightList(current);
+    $("#weightModal").classList.add("show");
+    setTimeout(function () {
+      var sel = document.querySelector(".weight-option.selected");
+      if (sel) sel.scrollIntoView({ block: "center", behavior: "instant" });
+      else {
+        var list = $("#weightList");
+        if (list) list.scrollTop = 0;
+      }
+    }, 30);
+  }
+
+  function closeWeightPicker() {
+    $("#weightModal").classList.remove("show");
+    weightPickerDateISO = null;
+    weightPickerExName = null;
+  }
+
+  function renderWeightList(currentValue) {
+    var list = $("#weightList");
+    var html = '';
+    html += '<button class="weight-option empty-option' + (currentValue == null ? ' selected' : '') + '" data-value="null">Ağırlık yok</button>';
+    for (var i = 1; i <= 200; i++) {
+      var kg = i * 2.5;
+      var sel = (currentValue != null && Math.abs(currentValue - kg) < 0.001) ? ' selected' : '';
+      html += '<button class="weight-option' + sel + '" data-value="' + kg + '">' + formatWeight(kg) + ' kg</button>';
+    }
+    list.innerHTML = html;
+
+    list.querySelectorAll(".weight-option").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var raw = btn.dataset.value;
+        var value = raw === "null" ? null : parseFloat(raw);
+        if (weightPickerDateISO && weightPickerExName) {
+          setExerciseWeight(weightPickerDateISO, weightPickerExName, value);
+        }
+        closeWeightPicker();
+        if (currentView === "workout") renderWorkout();
+        if (currentView === "stats") renderStats();
+        renderHeader();
+      });
+    });
+  }
+
+  $("#weightCloseBtn").addEventListener("click", closeWeightPicker);
+  $("#weightModal").addEventListener("click", function (e) {
+    if (e.target === $("#weightModal")) closeWeightPicker();
   });
 
-  var gn = document.createElement("div");
-  gn.className = "notes";
-  gn.style.margin = "2rem 1.25rem 1rem";
-  gn.innerHTML = '<h4>' + generalNotes.title + '</h4><ul>' +
-    generalNotes.items.map(function (x) { return '<li>' + x + '</li>'; }).join("") +
-    '</ul>';
-  panelsEl.appendChild(gn);
-
-  function switchDay(day) {
-    document.querySelectorAll(".tab").forEach(function (t) {
-      t.classList.toggle("active", t.dataset.day === day);
-    });
-    document.querySelectorAll(".panel").forEach(function (p) {
-      p.classList.toggle("active", p.dataset.day === day);
-    });
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  function renderStatTile(value, label) {
+    return '<div class="stat-tile"><span class="stat-value">' + value + '</span><span class="stat-label">' + label + '</span></div>';
   }
 
-  function toggle(day, idx, el, panel) {
-    var k = key(day, idx);
-    state[k] = !state[k];
-    el.classList.toggle("done", state[k]);
-    save();
-    updateDayProgress(day, panel);
+  function renderDonut(groups) {
+    var total = 0;
+    GROUP_ORDER.forEach(function (g) { total += (groups[g] || 0); });
+    if (total === 0) return '<div class="stats-empty">Bu ay henüz veri yok</div>';
 
-    if (state[k]) {
-      var d = program[day];
-      var allDone = d.ex.every(function (_, i) { return state[key(day, i)]; });
-      if (allDone) celebrate(day);
+    var r = 70, sw = 26;
+    var circumference = 2 * Math.PI * r;
+    var offset = 0;
+
+    var svg = '<svg viewBox="0 0 200 200" class="donut">';
+    svg += '<circle cx="100" cy="100" r="' + r + '" fill="none" stroke="var(--surface-2)" stroke-width="' + sw + '"/>';
+    GROUP_ORDER.forEach(function (g) {
+      var count = groups[g] || 0;
+      if (count === 0) return;
+      var fraction = count / total;
+      var dash = fraction * circumference;
+      svg += '<circle cx="100" cy="100" r="' + r + '" fill="none" stroke="' + GROUP_COLORS[g] + '" stroke-width="' + sw + '" stroke-dasharray="' + dash + ' ' + (circumference - dash) + '" stroke-dashoffset="' + (-offset) + '" transform="rotate(-90 100 100)"/>';
+      offset += dash;
+    });
+    svg += '</svg>';
+
+    var legend = '<div class="donut-legend">';
+    GROUP_ORDER.forEach(function (g) {
+      var count = groups[g] || 0;
+      var pct = total ? Math.round((count / total) * 100) : 0;
+      legend += '<div class="donut-legend-item">';
+      legend += '<span class="donut-legend-label"><span class="donut-legend-dot" style="background:' + GROUP_COLORS[g] + '"></span>' + g + '</span>';
+      legend += '<span class="donut-legend-value">' + count + ' · ' + pct + '%</span></div>';
+    });
+    legend += '</div>';
+    return '<div class="donut-wrap">' + svg + legend + '</div>';
+  }
+
+  function renderStats() {
+    var weekStats = getStats("week");
+    var monthStats = getStats("month");
+    var allStats = getStats("all");
+
+    var html = '';
+
+    html += '<button class="card-cta" id="openCardBtn">';
+    html += '<div class="card-cta-icon"><svg viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 0 1 2.828 0L16 16"/><path d="M14 14l1.586-1.586a2 2 0 0 1 2.828 0L20 14"/><circle cx="9" cy="9" r="2"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>';
+    html += '<div class="card-cta-text"><div class="card-cta-title">Antrenman Kartı Oluştur</div><div class="card-cta-sub">Tarih aralığı seç, paylaş</div></div>';
+    html += '<svg class="card-cta-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+    html += '</button>';
+
+    html += '<div class="stats-card"><h3>Bu Hafta</h3><div class="stats-grid">';
+    html += renderStatTile(weekStats.sessions, "Antrenman");
+    html += renderStatTile(weekStats.sets, "Set");
+    html += renderStatTile(formatDurationLong(weekStats.duration), "Süre");
+    html += renderStatTile(weekStats.calories + " kcal", "Kalori");
+    html += '</div></div>';
+
+    html += '<div class="stats-card"><h3>Bu Ay</h3><div class="stats-grid">';
+    html += renderStatTile(monthStats.sessions, "Antrenman");
+    html += renderStatTile(monthStats.sets, "Set");
+    html += renderStatTile(formatDurationLong(monthStats.duration), "Süre");
+    html += renderStatTile(monthStats.calories + " kcal", "Kalori");
+    html += '</div></div>';
+
+    html += '<div class="stats-card"><h3>Kas Grubu · Bu Ay</h3>';
+    html += renderDonut(monthStats.groups);
+    html += '</div>';
+
+    html += '<div class="stats-card"><h3>Tüm Zamanlar</h3><div class="stats-grid">';
+    html += renderStatTile(allStats.sessions, "Antrenman");
+    html += renderStatTile(allStats.sets, "Set");
+    html += renderStatTile(formatDurationLong(allStats.duration), "Süre");
+    html += renderStatTile(allStats.calories + " kcal", "Kalori");
+    html += '</div></div>';
+
+    statsContent.innerHTML = html;
+
+    $("#openCardBtn").addEventListener("click", openCardModal);
+  }
+
+  var currentCardBlob = null;
+  var currentCardDataURL = null;
+  var currentCardStart = null;
+  var currentCardEnd = null;
+
+  function openCardModal() {
+    var now = today();
+    var weekAgo = new Date(now.getTime() - 6 * 86400000);
+    $("#cardStart").value = toISO(weekAgo);
+    $("#cardEnd").value = toISO(now);
+    $("#cardPreviewWrap").style.display = "none";
+    $("#cardActions").style.display = "none";
+    $("#cardPreview").removeAttribute("src");
+    currentCardBlob = null;
+    currentCardDataURL = null;
+    $("#cardModal").classList.add("show");
+  }
+
+  function closeCardModal() {
+    $("#cardModal").classList.remove("show");
+  }
+
+  $("#cardClose").addEventListener("click", closeCardModal);
+  $("#cardModal").addEventListener("click", function (e) {
+    if (e.target === $("#cardModal")) closeCardModal();
+  });
+
+  $("#cardGenerate").addEventListener("click", function () {
+    var s = $("#cardStart").value;
+    var e = $("#cardEnd").value;
+    if (!s || !e) { showToast("Tarih seç"); return; }
+    if (s > e) { showToast("Başlangıç bitişten sonra olamaz"); return; }
+    currentCardStart = s;
+    currentCardEnd = e;
+    var canvas = document.createElement("canvas");
+    drawCard(canvas, s, e);
+    currentCardDataURL = canvas.toDataURL("image/png");
+    $("#cardPreview").src = currentCardDataURL;
+    $("#cardPreviewWrap").style.display = "block";
+    $("#cardActions").style.display = "flex";
+    canvas.toBlob(function (blob) { currentCardBlob = blob; }, "image/png");
+    setTimeout(function () {
+      $("#cardPreview").scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+  });
+
+  $("#cardShare").addEventListener("click", function () {
+    if (!currentCardBlob) { showToast("Önce kartı oluştur"); return; }
+    try {
+      var file = new File([currentCardBlob], "antrenman.png", { type: "image/png" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({
+          files: [file],
+          title: "Antrenman Özeti",
+          text: "Antrenman özetim 💪"
+        }).catch(function () {});
+      } else if (navigator.share) {
+        navigator.share({ title: "Antrenman Özeti", text: "Antrenman özetim 💪" }).catch(function () {});
+      } else {
+        showToast("Paylaşım desteklenmiyor, indir");
+      }
+    } catch (err) {
+      showToast("Paylaşım başarısız, indir");
+    }
+  });
+
+  $("#cardDownload").addEventListener("click", function () {
+    if (!currentCardDataURL) { showToast("Önce kartı oluştur"); return; }
+    var a = document.createElement("a");
+    a.href = currentCardDataURL;
+    a.download = "antrenman-" + currentCardStart + "_" + currentCardEnd + ".png";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast("İndirildi");
+  });
+
+  function drawTrackedText(ctx, text, x, y, tracking) {
+    var widths = [];
+    var totalWidth = 0;
+    for (var i = 0; i < text.length; i++) {
+      var w = ctx.measureText(text[i]).width;
+      widths.push(w);
+      totalWidth += w + tracking;
+    }
+    totalWidth -= tracking;
+    var startX = x - totalWidth / 2;
+    ctx.textAlign = "left";
+    for (var j = 0; j < text.length; j++) {
+      ctx.fillText(text[j], startX, y);
+      startX += widths[j] + tracking;
     }
   }
 
-  function updateDayProgress(day, panel) {
-    var d = program[day];
-    var total = d.ex.length;
-    var done = d.ex.filter(function (_, i) { return state[key(day, i)]; }).length;
-    var pct = (done / total) * 100;
+  function roundedRect(ctx, x, y, w, h, r) {
+    if (w < 2 * r) r = w / 2;
+    if (h < 2 * r) r = h / 2;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
 
-    var fill = panel.querySelector(".bar-fill");
-    if (fill) fill.style.width = pct + "%";
+  function formatRangeForCard(startISO, endISO) {
+    var s = fromISO(startISO);
+    var e = fromISO(endISO);
+    var sameMonth = (s.getMonth() === e.getMonth()) && (s.getFullYear() === e.getFullYear());
+    var nowYear = new Date().getFullYear();
+    var line1, line2;
 
-    var prog = panel.querySelector("[data-progress]");
-    if (prog) {
-      prog.textContent = done + "/" + total;
-      prog.classList.toggle("done", done === total);
+    if (sameMonth) {
+      line1 = s.getDate() + " — " + e.getDate() + " " + MONTHS_TR[e.getMonth()];
+      if (e.getFullYear() !== nowYear) line1 += " " + e.getFullYear();
+      line2 = null;
+    } else {
+      line1 = s.getDate() + " " + MONTHS_TR[s.getMonth()];
+      line2 = "— " + e.getDate() + " " + MONTHS_TR[e.getMonth()];
+      if (e.getFullYear() !== nowYear) line2 += " " + e.getFullYear();
     }
 
-    var tab = document.querySelector('.tab[data-day="' + day + '"]');
-    if (tab) tab.classList.toggle("done", done === total);
+    var days = Math.round((e.getTime() - s.getTime()) / 86400000) + 1;
+    return { line1: line1, line2: line2, daysCount: days };
   }
 
-  function updateWeekProgress() {
-    var total = 0, done = 0;
-    Object.keys(program).forEach(function (day) {
-      var d = program[day];
-      total += d.ex.length;
-      done += d.ex.filter(function (_, i) { return state[key(day, i)]; }).length;
+  function drawCard(canvas, startISO, endISO) {
+    var W = 1080, H = 1920;
+    canvas.width = W;
+    canvas.height = H;
+    var ctx = canvas.getContext("2d");
+
+    var isDark = document.documentElement.getAttribute("data-theme") === "dark";
+
+    var bgTop    = isDark ? "#0F0F14" : "#FFFFFF";
+    var bgBottom = isDark ? "#000000" : "#F2F2F7";
+    var text     = isDark ? "#FFFFFF" : "#000000";
+    var text2    = isDark ? "#C7C7CC" : "#3C3C43";
+    var text3    = isDark ? "#8E8E93" : "#8E8E93";
+    var sep      = isDark ? "rgba(255,255,255,0.10)" : "rgba(60,60,67,0.12)";
+    var accent   = isDark ? "#0A84FF" : "#007AFF";
+    var success  = isDark ? "#30D158" : "#34C759";
+    var warm     = isDark ? "#FF9F0A" : "#FF9500";
+
+    var bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+    bgGrad.addColorStop(0, bgTop);
+    bgGrad.addColorStop(1, bgBottom);
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, W, H);
+
+    var glow = ctx.createRadialGradient(W / 2, -200, 0, W / 2, -200, 1300);
+    glow.addColorStop(0, isDark ? "rgba(10,132,255,0.30)" : "rgba(0,122,255,0.12)");
+    glow.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, W, 1200);
+
+    var glow2 = ctx.createRadialGradient(W / 2, H + 300, 0, W / 2, H + 300, 1000);
+    glow2.addColorStop(0, isDark ? "rgba(94,92,230,0.20)" : "rgba(94,92,230,0.08)");
+    glow2.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = glow2;
+    ctx.fillRect(0, H - 1000, W, 1000);
+
+    var pad = 90;
+    var stats = collectRangeStats(startISO, endISO);
+    var rangeInfo = formatRangeForCard(startISO, endISO);
+
+    ctx.fillStyle = accent;
+    ctx.fillRect(pad, 90, 100, 8);
+
+    ctx.fillStyle = text3;
+    ctx.font = "700 22px -apple-system, system-ui, 'Segoe UI', sans-serif";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+    drawTrackedText(ctx, "ANTRENMAN ÖZETİ", pad + 340, 180, 7);
+
+    var line1Y = 300;
+    ctx.fillStyle = text;
+    ctx.font = "800 76px -apple-system, system-ui, 'Segoe UI', sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText(rangeInfo.line1, pad, line1Y);
+
+    var daysY;
+    if (rangeInfo.line2) {
+      var line2Y = line1Y + 92;
+      ctx.fillText(rangeInfo.line2, pad, line2Y);
+      daysY = line2Y + 60;
+    } else {
+      daysY = line1Y + 60;
+    }
+
+    ctx.fillStyle = text3;
+    ctx.font = "500 28px -apple-system, system-ui, 'Segoe UI', sans-serif";
+    ctx.fillText(rangeInfo.daysCount + " gün", pad, daysY);
+
+    var divY1 = daysY + 40;
+
+    ctx.fillStyle = sep;
+    ctx.fillRect(pad, divY1, W - pad * 2, 2);
+
+    var tileTopY = divY1 + 80;
+    var tiles = [
+      { label: "ANTRENMAN", value: String(stats.sessions) },
+      { label: "SET", value: String(stats.sets) },
+      { label: "SÜRE", value: formatDurationLong(stats.duration) }
+    ];
+    if (stats.calories > 0) {
+      tiles.push({ label: "KALORİ", value: stats.calories.toLocaleString("tr-TR"), unit: "kcal" });
+    }
+
+    var tileCols = tiles.length;
+    var tileColW = (W - pad * 2) / tileCols;
+
+    tiles.forEach(function (tile, i) {
+      var cx = pad + tileColW * i + tileColW / 2;
+
+      ctx.fillStyle = text3;
+      ctx.font = "700 18px -apple-system, system-ui, 'Segoe UI', sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "alphabetic";
+      drawTrackedText(ctx, tile.label, cx, tileTopY + 20, 4);
+
+      ctx.fillStyle = text;
+      ctx.font = "800 56px -apple-system, system-ui, 'Segoe UI', sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "alphabetic";
+      ctx.fillText(tile.value, cx, tileTopY + 100);
+
+      if (tile.unit) {
+        ctx.fillStyle = text3;
+        ctx.font = "500 18px -apple-system, system-ui, 'Segoe UI', sans-serif";
+        ctx.fillText(tile.unit, cx, tileTopY + 130);
+      }
     });
-    var pct = total ? (done / total) : 0;
-    var circumference = 2 * Math.PI * 28;
-    var ring = document.getElementById("weekRing");
-    if (ring) ring.style.strokeDashoffset = circumference * (1 - pct);
-    var txt = document.getElementById("ringText");
-    if (txt) txt.textContent = Math.round(pct * 100) + "%";
+
+    var divY2 = tileTopY + 170;
+
+    ctx.fillStyle = sep;
+    ctx.fillRect(pad, divY2, W - pad * 2, 2);
+
+    var mgLabelY = divY2 + 65;
+    ctx.fillStyle = text3;
+    ctx.font = "700 22px -apple-system, system-ui, 'Segoe UI', sans-serif";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+    drawTrackedText(ctx, "KAS GRUBU DAĞILIMI", pad, mgLabelY, 5);
+
+    var groupTotal = 0;
+    var maxGroup = 0;
+    GROUP_ORDER.forEach(function (g) {
+      var v = stats.groups[g] || 0;
+      groupTotal += v;
+      if (v > maxGroup) maxGroup = v;
+    });
+
+    var barAreaY = mgLabelY + 50;
+    var rowH = 62;
+    var barH = 12;
+    var labelW = 240;
+    var barMaxW = W - pad * 2 - labelW - 200;
+
+    GROUP_ORDER.forEach(function (g, i) {
+      var count = stats.groups[g] || 0;
+      var pct = groupTotal > 0 ? Math.round((count / groupTotal) * 100) : 0;
+      var y = barAreaY + i * rowH;
+      var centerY = y + barH / 2;
+
+      ctx.fillStyle = GROUP_COLORS[g];
+      ctx.beginPath();
+      ctx.arc(pad + 10, centerY, 9, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = text;
+      ctx.font = "600 28px -apple-system, system-ui, 'Segoe UI', sans-serif";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
+      ctx.fillText(g, pad + 32, centerY);
+
+      var barX = pad + labelW;
+      ctx.fillStyle = isDark ? "rgba(255,255,255,0.06)" : "rgba(60,60,67,0.08)";
+      roundedRect(ctx, barX, y, barMaxW, barH, barH / 2);
+      ctx.fill();
+
+      if (count > 0 && maxGroup > 0) {
+        var fillW = Math.max((count / maxGroup) * barMaxW, barH);
+        ctx.fillStyle = GROUP_COLORS[g];
+        roundedRect(ctx, barX, y, fillW, barH, barH / 2);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = text;
+      ctx.font = "700 24px -apple-system, system-ui, 'Segoe UI', sans-serif";
+      ctx.textAlign = "right";
+      ctx.textBaseline = "middle";
+      ctx.fillText(count + "  ·  " + pct + "%", W - pad, centerY);
+    });
+
+    var divY3 = barAreaY + 5 * rowH + 15;
+
+    ctx.fillStyle = sep;
+    ctx.fillRect(pad, divY3, W - pad * 2, 2);
+
+    var gelLabelY = divY3 + 65;
+    ctx.fillStyle = text3;
+    ctx.font = "700 22px -apple-system, system-ui, 'Segoe UI', sans-serif";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+    drawTrackedText(ctx, "GELİŞİM", pad, gelLabelY, 5);
+
+    var sDate = fromISO(startISO);
+    var eDate = fromISO(endISO);
+    var rangeDays = daysBetween(sDate, eDate) + 1;
+    var programDaysInRange = 0;
+    for (var i = 0; i < rangeDays; i++) {
+      var dd = new Date(sDate.getTime() + i * 86400000);
+      var dn = getProgramDayForDate(dd);
+      if (dn && dn !== "Dinlenme") programDaysInRange++;
+    }
+    var consistency = programDaysInRange > 0 ? Math.round((stats.sessions / programDaysInRange) * 100) : 0;
+    if (consistency > 100) consistency = 100;
+    var avgSec = stats.sessions > 0 ? Math.round(stats.duration / stats.sessions) : 0;
+    var strengthPct = Math.round((stats.sets / 25) * 10) / 10;
+
+    var hasVolume = stats.volume > 0;
+    var colCount = hasVolume ? 4 : 3;
+    var gelColW = (W - pad * 2) / colCount;
+    var gelValueY = gelLabelY + 100;
+    var gelSubY = gelValueY + 40;
+
+    var cx1 = pad + gelColW * 0.5;
+    ctx.fillStyle = success;
+    ctx.font = "800 56px -apple-system, system-ui, 'Segoe UI', sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText("+" + strengthPct + "%", cx1, gelValueY);
+    ctx.fillStyle = text3;
+    ctx.font = "500 20px -apple-system, system-ui, 'Segoe UI', sans-serif";
+    ctx.fillText("tahmini güç", cx1, gelSubY);
+
+    var cx2 = pad + gelColW * 1.5;
+    ctx.fillStyle = text;
+    ctx.font = "800 56px -apple-system, system-ui, 'Segoe UI', sans-serif";
+    ctx.fillText(consistency + "%", cx2, gelValueY);
+    ctx.fillStyle = text3;
+    ctx.font = "500 20px -apple-system, system-ui, 'Segoe UI', sans-serif";
+    ctx.fillText("konsistlik", cx2, gelSubY);
+
+    var cx3 = pad + gelColW * 2.5;
+    ctx.fillStyle = text;
+    ctx.font = "800 56px -apple-system, system-ui, 'Segoe UI', sans-serif";
+    ctx.fillText(formatDurationLong(avgSec), cx3, gelValueY);
+    ctx.fillStyle = text3;
+    ctx.font = "500 20px -apple-system, system-ui, 'Segoe UI', sans-serif";
+    ctx.fillText("ort. süre", cx3, gelSubY);
+
+    if (hasVolume) {
+      var cx4 = pad + gelColW * 3.5;
+      ctx.fillStyle = accent;
+      ctx.font = "800 56px -apple-system, system-ui, 'Segoe UI', sans-serif";
+      ctx.fillText(formatVolume(stats.volume), cx4, gelValueY);
+      ctx.fillStyle = text3;
+      ctx.font = "500 20px -apple-system, system-ui, 'Segoe UI', sans-serif";
+      ctx.fillText("hacim", cx4, gelSubY);
+    }
+
+    var streak = calculateStreak();
+    if (streak > 0) {
+      var pillText = "🔥  " + streak + " GÜN STREAK";
+      ctx.font = "700 30px -apple-system, system-ui, 'Segoe UI', sans-serif";
+      var pw = ctx.measureText(pillText).width;
+      var pillW = pw + 90;
+      var pillH = 66;
+      var pillX = W / 2 - pillW / 2;
+      var pillY = 1500;
+
+      ctx.fillStyle = isDark ? "rgba(255,159,10,0.15)" : "rgba(255,149,0,0.12)";
+      roundedRect(ctx, pillX, pillY, pillW, pillH, pillH / 2);
+      ctx.fill();
+
+      ctx.fillStyle = warm;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(pillText, W / 2, pillY + pillH / 2 + 2);
+    }
+
+    var sigY = H - 140;
+    ctx.fillStyle = sep;
+    ctx.fillRect(W / 2 - 50, sigY - 70, 100, 3);
+
+    ctx.fillStyle = text;
+    ctx.font = "800 52px -apple-system, system-ui, 'Segoe UI', sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText(state.name || "Antrenman", W / 2, sigY);
+
+    ctx.fillStyle = text3;
+    ctx.font = "500 20px -apple-system, system-ui, 'Segoe UI', sans-serif";
+    ctx.fillText("antrenman günlüğü", W / 2, sigY + 42);
   }
 
-  function celebrate(day) {
-    var colors = ["#6366f1", "#8b5cf6", "#ec4899", "#06b6d4", "#10b981", "#f59e0b"];
-    var c = document.getElementById("celebration");
-    for (var i = 0; i < 45; i++) {
+  function renderCalendar() {
+    var y = calendarMonth.getFullYear();
+    var m = calendarMonth.getMonth();
+    $("#calMonthLabel").textContent = MONTHS_TR[m] + " " + y;
+    var html = "";
+    WEEK_HEADERS.forEach(function (h) { html += '<div class="cal-header">' + h + '</div>'; });
+    var first = new Date(y, m, 1);
+    var startWeekday = (first.getDay() + 6) % 7;
+    var daysInMonth = new Date(y, m + 1, 0).getDate();
+    for (var i = 0; i < startWeekday; i++) html += '<div class="cal-cell empty"></div>';
+    var t = today();
+    for (var d = 1; d <= daysInMonth; d++) {
+      var date = new Date(y, m, d);
+      var iso = toISO(date);
+      var dayName = getProgramDayForDate(date);
+      var isToday = toISO(t) === iso;
+      var isFuture = date.getTime() > t.getTime();
+      var cls = "cal-cell";
+      if (isToday) cls += " today";
+      if (isFuture) cls += " future";
+      var dot = '';
+      if (dayName && dayName !== "Dinlenme") {
+        var p = getDayProgress(iso, dayName);
+        if (p.done === p.total && p.total > 0) cls += " complete";
+        else if (p.done > 0) cls += " partial";
+        dot = '<span class="cal-dot"></span>';
+      }
+      html += '<button class="' + cls + '" data-date="' + iso + '">' + d + dot + '</button>';
+    }
+    calendarGrid.innerHTML = html;
+    calendarGrid.querySelectorAll(".cal-cell[data-date]").forEach(function (cell) {
+      cell.addEventListener("click", function () {
+        selectedDate = fromISO(cell.dataset.date);
+        currentView = "workout";
+        document.querySelectorAll(".segmented button").forEach(function (b) { b.classList.toggle("active", b.dataset.view === "workout"); });
+        document.querySelectorAll(".view").forEach(function (v) { v.classList.toggle("active", v.id === "view-workout"); });
+        renderWorkout();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    });
+  }
+
+  function renderSettings() {
+    var html = '';
+
+    var daysSinceBackup = null;
+    if (state.lastBackup) daysSinceBackup = daysBetween(fromISO(state.lastBackup), today());
+    if (!state.lastBackup) {
+      html += '<div class="warn-banner">Hiç yedek almadın. Aşağıdan yedekleyebilirsin.</div>';
+    } else if (daysSinceBackup >= 30) {
+      html += '<div class="warn-banner danger">' + daysSinceBackup + ' gündür yedek almadın.</div>';
+    } else if (daysSinceBackup >= 7) {
+      html += '<div class="warn-banner">Son yedek ' + daysSinceBackup + ' gün önce.</div>';
+    }
+
+    html += '<div class="settings-group-title">Profil</div>';
+    html += '<div class="settings-group">';
+    html += '<div class="settings-row"><div class="label-wrap"><span>İsim Soyisim</span></div>';
+    html += '<input type="text" id="settingsName" value="' + escapeHtml(state.name || "") + '"></div>';
+    html += '<div class="settings-row"><div class="label-wrap"><span>İlk Pazartesi</span><span class="sub">Seçtiğin gün o haftanın Pzt\'sine ayarlanır</span></div>';
+    html += '<input type="date" id="settingsDate" value="' + (state.startDate || toISO(normalizeToMonday(today()))) + '"></div>';
+    html += '<button class="settings-row primary" id="saveProfileBtn"><span>Kaydet</span>';
+    html += '<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>';
+    html += '</div>';
+
+    html += '<div class="settings-group-title">Yedekleme</div>';
+    html += '<div class="settings-group">';
+    html += '<button class="settings-row primary" id="backupBtn">';
+    html += '<div class="label-wrap"><span>Yedekle</span><span class="sub">JSON dosyası olarak indir</span></div>';
+    html += '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>';
+    html += '<button class="settings-row primary" id="restoreBtn">';
+    html += '<div class="label-wrap"><span>Geri Yükle</span><span class="sub">Yedek dosyasından yükle</span></div>';
+    html += '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button>';
+    html += '</div>';
+
+    var totalSessions = 0;
+    for (var k in state.sessions) {
+      var s = state.sessions[k];
+      if (s && s.sets) {
+        for (var k2 in s.sets) { if (s.sets[k2] && s.sets[k2].some(Boolean)) { totalSessions++; break; } }
+      }
+    }
+    html += '<div class="settings-group-title">Bilgi</div>';
+    html += '<div class="settings-group">';
+    html += '<div class="info-row"><span>Toplam antrenman</span><span class="value strong">' + totalSessions + '</span></div>';
+    html += '<div class="info-row"><span>Streak</span><span class="value fire">🔥 ' + calculateStreak() + ' gün</span></div>';
+    if (state.lastBackup) {
+      html += '<div class="info-row"><span>Son yedek</span><span class="value">' + state.lastBackup + '</span></div>';
+    }
+    html += '</div>';
+
+    html += '<div class="settings-group-title">Tehlikeli Bölge</div>';
+    html += '<div class="settings-group">';
+    html += '<button class="settings-row danger" id="resetAllBtn"><span>Tüm verileri sıfırla</span>';
+    html += '<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>';
+    html += '</div>';
+
+    settingsContent.innerHTML = html;
+
+    $("#saveProfileBtn").addEventListener("click", function () {
+      var n = $("#settingsName").value.trim();
+      var d = $("#settingsDate").value;
+      if (!n || !d) { showToast("İsim ve tarih gerekli"); return; }
+      state.name = n;
+      state.startDate = toISO(normalizeToMonday(fromISO(d)));
+      save();
+      renderHeader();
+      showToast("Kaydedildi");
+    });
+
+    $("#backupBtn").addEventListener("click", function () {
+      try {
+        var data = JSON.stringify(state, null, 2);
+        var blob = new Blob([data], { type: "application/json" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "antrenman-yedek-" + toISO(today()) + ".json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+        state.lastBackup = toISO(today());
+        save();
+        showToast("Yedek indirildi");
+        renderSettings();
+      } catch (e) { showToast("Yedek alınamadı"); }
+    });
+
+    $("#restoreBtn").addEventListener("click", function () {
+      var input = document.createElement("input");
+      input.type = "file";
+      input.accept = "application/json,.json";
+      input.addEventListener("change", function () {
+        var file = input.files && input.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function () {
+          try {
+            var parsed = JSON.parse(reader.result);
+            if (!parsed || typeof parsed !== "object") throw new Error("invalid");
+            if (!confirm("Mevcut verilerin yedekle değiştirilecek. Devam edilsin mi?")) return;
+            state = Object.assign({ name: "", startDate: null, sessions: {}, lastBackup: null }, parsed);
+            if (!state.sessions) state.sessions = {};
+            if (state.startDate) {
+              var dd = fromISO(state.startDate);
+              if (dd.getDay() !== 1) state.startDate = toISO(normalizeToMonday(dd));
+            }
+            save();
+            renderHeader();
+            renderSettings();
+            if (currentView === "workout") renderWorkout();
+            if (currentView === "calendar") renderCalendar();
+            if (currentView === "stats") renderStats();
+            showToast("Yedek geri yüklendi");
+          } catch (e) { showToast("Dosya okunamadı"); }
+        };
+        reader.readAsText(file);
+      });
+      input.click();
+    });
+
+    $("#resetAllBtn").addEventListener("click", function () {
+      if (!confirm("Tüm veriler silinecek. Emin misin?")) return;
+      if (!confirm("Son bir kez daha: Bu işlem geri alınamaz. Silinsin mi?")) return;
+      state = { name: "", startDate: null, sessions: {}, lastBackup: null };
+      save();
+      undoStack = [];
+      renderHeader();
+      renderSettings();
+      renderWorkout();
+      renderCalendar();
+      renderStats();
+      showToast("Tüm veriler silindi");
+    });
+  }
+
+  function checkCelebration(dateISO, dayName) {
+    var p = getDayProgress(dateISO, dayName);
+    if (p.total > 0 && p.done === p.total) {
+      if (state.sessions[dateISO] && state.sessions[dateISO].__celebrated) return;
+      ensureSession(dateISO).__celebrated = true;
+      save();
+      celebrate(dayName);
+    }
+  }
+  function celebrate(dayName) {
+    var styles = getComputedStyle(document.documentElement);
+    var colors = [
+      styles.getPropertyValue("--accent").trim() || "#007AFF",
+      styles.getPropertyValue("--success").trim() || "#34C759",
+      styles.getPropertyValue("--focus").trim() || "#FFCC00"
+    ];
+    for (var i = 0; i < 30; i++) {
       var piece = document.createElement("div");
       piece.className = "confetti";
       piece.style.left = Math.random() * 100 + "%";
       piece.style.background = colors[Math.floor(Math.random() * colors.length)];
-      piece.style.animationDelay = (Math.random() * 0.35) + "s";
-      piece.style.animationDuration = (1.5 + Math.random() * 1.1) + "s";
-      var size = (6 + Math.random() * 6) + "px";
+      piece.style.animationDelay = (Math.random() * 0.3) + "s";
+      piece.style.animationDuration = (1.2 + Math.random() * 0.8) + "s";
+      var size = (4 + Math.random() * 4) + "px";
       piece.style.width = size;
       piece.style.height = size;
-      c.appendChild(piece);
+      celebration.appendChild(piece);
       (function (p) {
-        setTimeout(function () { if (p.parentNode) p.parentNode.removeChild(p); }, 3000);
+        setTimeout(function () { if (p.parentNode) p.parentNode.removeChild(p); }, 2500);
       })(piece);
     }
-
-    var toast = document.getElementById("toast");
-    toast.textContent = "🎉 " + day + " tamamlandı!";
-    toast.classList.add("show");
-    setTimeout(function () { toast.classList.remove("show"); }, 2400);
+    showToast("🎉 " + dayName + " tamamlandı!");
   }
 
-  // Weekly auto-reset (Pazartesi sabahı)
-  function getMondayStr(d) {
-    var t = new Date(d);
-    var day = t.getDay() || 7;
-    t.setDate(t.getDate() - day + 1);
-    return t.getFullYear() + "-" +
-      String(t.getMonth() + 1).padStart(2, "0") + "-" +
-      String(t.getDate()).padStart(2, "0");
+  function render() {
+    if (!state.startDate || !state.name) return;
+    renderHeader();
+    renderWorkout();
+    if (currentView === "calendar") renderCalendar();
+    if (currentView === "stats") renderStats();
+    if (currentView === "settings") renderSettings();
   }
 
-  (function () {
-    var mondayStr = getMondayStr(now);
-    var lastMonday = null;
-    try { lastMonday = localStorage.getItem("last_monday_v2"); } catch (e) {}
-    if (lastMonday !== mondayStr) {
-      state = {};
-      try { localStorage.setItem(STORAGE_KEY, "{}"); } catch (e) {}
-      try { localStorage.setItem("last_monday_v2", mondayStr); } catch (e) {}
-      document.querySelectorAll(".ex").forEach(function (e) { e.classList.remove("done"); });
-      document.querySelectorAll(".panel").forEach(function (p) {
-        if (p.dataset.day) updateDayProgress(p.dataset.day, p);
-      });
-      updateWeekProgress();
-    }
-  })();
+  applyTheme(getInitialTheme());
+
+  initOnboarding();
+  if (state.startDate && state.name) render();
 })();
 </script>
 </body>
