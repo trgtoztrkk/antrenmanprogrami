@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Antrenman">
+<meta name="theme-color" content="#0f172a">
+<link rel="manifest" href="/manifest.webmanifest">
+<title>Antrenman Programı</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; padding: 0;
+    min-height: 100vh;
+    background: #0f172a;
+    color: #f1f5f9;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    background:
+      radial-gradient(1200px 600px at 50% -10%, rgba(99,102,241,0.18), transparent 60%),
+      radial-gradient(800px 400px at 100% 100%, rgba(236,72,153,0.08), transparent 60%),
+      #0f172a;
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  /* Durum çubuğu (çentik) alanını kaydırırken örter */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: env(safe-area-inset-top);
+    background: #0f172a;
+    z-index: 25;
+    pointer-events: none;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    text-align: center;
+    padding: calc(env(safe-area-inset-top) + 2.2rem) 1.25rem 1rem;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    width: 280px; height: 280px;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(99,102,241,0.35), transparent 70%);
+    filter: blur(50px);
+    z-index: 0;
+    pointer-events: none;
+  }
+  .hero > * { position: relative; z-index: 1; }
+  .date-line {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 0.55rem;
+    font-weight: 500;
+  }
+  .hero-title {
+    font-size: 1.85rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #ffffff 30%, #94a3b8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+    line-height: 1.1;
+  }
+  .ring-wrap { display: flex; justify-content: center; margin: 1.35rem 0 0.25rem; }
+  .ring { width: 72px; height: 72px; position: relative; }
+  .ring svg { transform: rotate(-90deg); display: block; }
+  .ring-text {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; font-weight: 700;
+    color: #f1f5f9;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ===== TABS ===== */
+  .tabs {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding: 1.2rem 1.25rem 1.35rem;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    position: sticky;
+    top: env(safe-area-inset-top);
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 20;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex: 0 0 auto;
+    padding: 0.55rem 1rem;
+    border-radius: 100px;
+    background: rgba(30, 41, 59, 0.6);
+    color: #94a3b8;
+    font-size: 0.82rem;
+    font-weight: 600;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+  .tab:active { transform: scale(0.96); }
+  .tab.active {
+    color: #fff;
+    background: var(--tab-color, #6366f1);
+    border-color: transparent;
+    box-shadow:
+      0 0 0 1px var(--tab-color, #6366f1),
+      0 10px 30px -10px var(--tab-color, #6366f1);
+    transform: translateY(-1px);
+  }
+  .tab .dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #fff;
+    margin-left: 0.45rem;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .tab.done .dot { opacity: 1; transform: scale(1); }
+
+  /* ===== PANELS ===== */
+  .panel { display: none; padding: 0 1.25rem 3rem; }
+  .panel.active {
+    display: block;
+    animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .day-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0.25rem 0 0.85rem;
+  }
+  .day-name {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #94a3b8;
+    font-weight: 600;
+  }
+  .day-progress {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    transition: color 0.3s;
+  }
+  .day-progress.done { color: #10b981; }
+
+  .bar {
+    height: 3px;
+    background: rgba(148, 163, 184, 0.1);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-bottom: 1.35rem;
+  }
+  .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--day-color, #6366f1), #ec4899);
+    border-radius: 100px;
+    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 0 14px var(--day-color, #6366f1);
+  }
+
+  /* ===== EXERCISE CARD ===== */
+  .ex {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.95rem 1rem;
+    margin-bottom: 0.5rem;
+    background: rgba(30, 41, 59, 0.55);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    animation: slideIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .ex::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--day-color, #6366f1);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .ex:active { transform: scale(0.98); }
+  .ex.done {
+    background: rgba(15, 23, 42, 0.55);
+    border-color: rgba(16, 185, 129, 0.2);
+  }
+  .ex.done::before { background: #10b981; opacity: 1; }
+  .ex.done .name {
+    text-decoration: line-through;
+    text-decoration-color: rgba(148, 163, 184, 0.5);
+    color: #64748b;
+  }
+  .ex.done .reps { color: #64748b; }
+
+  .check {
+    flex: 0 0 auto;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 2px solid rgba(148, 163, 184, 0.3);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .check svg {
+    width: 14px; height: 14px;
+    stroke: #fff;
+    stroke-width: 3.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    stroke-dasharray: 24;
+    stroke-dashoffset: 24;
+    transition: stroke-dashoffset 0.4s cubic-bezier(0.65, 0, 0.35, 1) 0.05s;
+  }
+  .ex.done .check {
+    background: #10b981;
+    border-color: #10b981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+    transform: scale(1.05);
+  }
+  .ex.done .check svg { stroke-dashoffset: 0; }
+
+  .ex-body { flex: 1; min-width: 0; }
+  .name {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #f1f5f9;
+    line-height: 1.25;
+    transition: color 0.3s;
+  }
+  .reps {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 0.2rem;
+    font-variant-numeric: tabular-nums;
+    transition: color 0.3s;
+  }
+
+  /* ===== NOTES ===== */
+  .notes {
+    margin-top: 1.35rem;
+    padding: 1.1rem 1.2rem;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.5));
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 14px;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    line-height: 1.7;
+  }
+  .notes h4 {
+    color: #f1f5f9;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin: 0 0 0.75rem;
+    font-weight: 600;
+  }
+  .notes ul { margin: 0; padding-left: 1.1rem; }
+  .notes li { margin-bottom: 0.3rem; }
+  .notes li::marker { color: var(--day-color, #6366f1); }
+
+  /* ===== RESET ===== */
+  .reset {
+    display: block;
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 0.85rem;
+    background: transparent;
+    color: #f87171;
+    border: 1px solid rgba(248, 113, 113, 0.2);
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .reset:active {
+    background: rgba(248, 113, 113, 0.1);
+    transform: scale(0.98);
+  }
+
+  /* ===== CONFETTI ===== */
+  .celebration {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    overflow: hidden;
+  }
+  .confetti {
+    position: absolute;
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    top: -20px;
+    animation: confettiFall 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* ===== TOAST ===== */
+  .toast {
+    position: fixed;
+    bottom: calc(env(safe-area-inset-bottom) + 2rem); left: 50%;
+    transform: translateX(-50%) translateY(calc(120px + env(safe-area-inset-bottom)));
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #fff;
+    padding: 0.85rem 1.35rem;
+    border-radius: 100px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    box-shadow: 0 20px 40px -10px rgba(16, 185, 129, 0.55);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 1000;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="date-line" id="dateLine"></div>
+  <h1 class="hero-title">Antrenman Programı</h1>
+  <div class="ring-wrap">
+    <div class="ring">
+      <svg width="72" height="72" viewBox="0 0 72 72">
+        <circle cx="36" cy="36" r="28" stroke="rgba(148,163,184,0.15)" stroke-width="5" fill="none"/>
+        <circle id="weekRing" cx="36" cy="36" r="28" stroke="url(#ringGrad)" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="175.9" stroke-dashoffset="175.9" style="transition: stroke-dashoffset 0.8s cubic-bezier(0.16,1,0.3,1);"/>
+        <defs>
+          <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#6366f1"/>
+            <stop offset="100%" stop-color="#ec4899"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="ring-text" id="ringText">0%</div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs"></nav>
+<div id="panels"></div>
+
+<div class="celebration" id="celebration"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var program = {
+    "Pazartesi": {
+      color: "#6366f1",
+      ex: [
+        ["Bench Press", "4x6-8"],
+        ["Row", "4x6"],
+        ["Squat (box/kontrollü)", "3x6"],
+        ["OHP", "3x8"],
+        ["Lat Pulldown", "3x10"],
+        ["Hanging Knee Raise", "3x10"]
+      ]
+    },
+    "Salı": {
+      color: "#10b981",
+      ex: [
+        ["Barfiks + Şınav", "5 set (2+4)"],
+        ["Plate Halo", "3x10"],
+        ["Plate Speed Punch", "3x10"],
+        ["Plate Burpee", "3x8"],
+        ["Plate Swing", "3x12"],
+        ["Plate Wood Chop", "3x10"],
+        ["Plate Russian Twist", "3x10"],
+        ["Kum Torbası", "3 tur x 2 dk"]
+      ],
+      notes: [{
+        title: "Kum Torbası Rutini (3 tur x 2 dk, tur arası 60 sn)",
+        items: [
+          "0-30 sn: Jab + Cross",
+          "30-60 sn: Hook + Uppercut",
+          "60-90 sn: Diz Vuruşu (Clinch)",
+          "90-120 sn: Serbest Kombinasyon"
+        ]
+      }]
+    },
+    "Çarşamba": {
+      color: "#f59e0b",
+      ex: [
+        ["Box Squat / Hip Thrust", "4x6-8"],
+        ["Incline Bench", "3x10"],
+        ["Landmine Row", "3x10"],
+        ["Lat Raise", "3x10"],
+        ["Face Pull", "3x15"],
+        ["Cable Crunch", "3x12"]
+      ]
+    },
+    "Perşembe": {
+      color: "#10b981",
+      ex: [
+        ["Barfiks + Şınav", "5 set (2+4)"],
+        ["Plate Halo", "3x10"],
+        ["Plate Speed Punch", "3x10"],
+        ["Plate Burpee", "3x8"],
+        ["Plate Swing", "3x12"],
+        ["Plate Wood Chop", "3x10"],
+        ["Plate Russian Twist", "3x10"],
+        ["Kum Torbası", "3 tur x 2 dk"]
+      ],
+      notes: [{
+        title: "Kum Torbası Rutini (3 tur x 2 dk, tur arası 60 sn)",
+        items: [
+          "0-30 sn: Jab + Cross",
+          "30-60 sn: Hook + Uppercut",
+          "60-90 sn: Diz Vuruşu (Clinch)",
+          "90-120 sn: Serbest Kombinasyon"
+        ]
+      }]
+    },
+    "Cuma": {
+      color: "#a855f7",
+      ex: [
+        ["OHP", "4x6-8"],
+        ["Row", "4x6"],
+        ["Lat Pulldown / Pull-up", "3x8-10"],
+        ["Bench Press", "3x8"],
+        ["Plate Front Raise", "3x10"],
+        ["Hip Thrust / RDL", "3x8-10"],
+        ["Plank", "3x30-45 sn"]
+      ]
+    }
+  };
+
+  var generalNotes = {
+    title: "Genel Notlar",
+    items: [
+      "Isınma: Bisiklet 5 dk + dinamik açma 2 dk",
+      "Set arası: Büyük hareketler 2-3 dk, izole 60-90 sn",
+      "Plate devresinde hareketler arası 30-45 sn",
+      "Squat: Box veya kontrollü tempo. Rahatsız ederse Hip Thrust'a çevir",
+      "Kum torbası: bel nötr, rotasyon kalçadan gelsin"
+    ]
+  };
+
+  var STORAGE_KEY = "antrenman_v2";
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch (e) { state = {}; }
+
+  var tabsEl = document.getElementById("tabs");
+  var panelsEl = document.getElementById("panels");
+
+  var now = new Date();
+  var dayNames = ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"];
+  var monthNames = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+  document.getElementById("dateLine").textContent =
+    dayNames[now.getDay()] + ", " + now.getDate() + " " + monthNames[now.getMonth()];
+
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+    updateWeekProgress();
+  }
+  function key(day, idx) { return day + "_" + idx; }
+
+  // Build tabs & panels
+  Object.keys(program).forEach(function (day, i) {
+    var d = program[day];
+
+    var tab = document.createElement("div");
+    tab.className = "tab" + (i === 0 ? " active" : "");
+    tab.dataset.day = day;
+    tab.style.setProperty("--tab-color", d.color);
+    tab.innerHTML = day + '<span class="dot"></span>';
+    tab.addEventListener("click", function () { switchDay(day); });
+    tabsEl.appendChild(tab);
+
+    var panel = document.createElement("div");
+    panel.className = "panel" + (i === 0 ? " active" : "");
+    panel.dataset.day = day;
+    panel.style.setProperty("--day-color", d.color);
+
+    var head = document.createElement("div");
+    head.className = "day-head";
+    head.innerHTML = '<span class="day-name">' + day + ' Programı</span>' +
+                     '<span class="day-progress" data-progress>0/0</span>';
+    panel.appendChild(head);
+
+    var bar = document.createElement("div");
+    bar.className = "bar";
+    var fill = document.createElement("div");
+    fill.className = "bar-fill";
+    fill.style.width = "0%";
+    bar.appendChild(fill);
+    panel.appendChild(bar);
+
+    d.ex.forEach(function (item, idx) {
+      var name = item[0], reps = item[1];
+      var k = key(day, idx);
+      var done = !!state[k];
+
+      var ex = document.createElement("div");
+      ex.className = "ex" + (done ? " done" : "");
+      ex.style.animationDelay = (idx * 0.045) + "s";
+      ex.innerHTML =
+        '<div class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>' +
+        '<div class="ex-body"><div class="name">' + name + '</div>' +
+        '<div class="reps">' + reps + '</div></div>';
+
+      ex.addEventListener("click", function () { toggle(day, idx, ex, panel); });
+      panel.appendChild(ex);
+    });
+
+    if (d.notes) {
+      d.notes.forEach(function (n) {
+        var el = document.createElement("div");
+        el.className = "notes";
+        el.innerHTML = '<h4>' + n.title + '</h4><ul>' +
+          n.items.map(function (x) { return '<li>' + x + '</li>'; }).join("") +
+          '</ul>';
+        panel.appendChild(el);
+      });
+    }
+
+    var reset = document.createElement("button");
+    reset.className = "reset";
+    reset.textContent = "Bu günü sıfırla";
+    reset.addEventListener("click", function () {
+      if (!confirm(day + " günündeki tüm tikler silinsin mi?")) return;
+      d.ex.forEach(function (_, idx) { state[key(day, idx)] = false; });
+      save();
+      panel.querySelectorAll(".ex").forEach(function (e) { e.classList.remove("done"); });
+      updateDayProgress(day, panel);
+    });
+    panel.appendChild(reset);
+
+    panelsEl.appendChild(panel);
+    updateDayProgress(day, panel);
+  });
+
+  var gn = document.createElement("div");
+  gn.className = "notes";
+  gn.style.margin = "2rem 1.25rem 1rem";
+  gn.innerHTML = '<h4>' + generalNotes.title + '</h4><ul>' +
+    generalNotes.items.map(function (x) { return '<li>' + x + '</li>'; }).join("") +
+    '</ul>';
+  panelsEl.appendChild(gn);
+
+  function switchDay(day) {
+    document.querySelectorAll(".tab").forEach(function (t) {
+      t.classList.toggle("active", t.dataset.day === day);
+    });
+    document.querySelectorAll(".panel").forEach(function (p) {
+      p.classList.toggle("active", p.dataset.day === day);
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function toggle(day, idx, el, panel) {
+    var k = key(day, idx);
+    state[k] = !state[k];
+    el.classList.toggle("done", state[k]);
+    save();
+    updateDayProgress(day, panel);
+
+    if (state[k]) {
+      var d = program[day];
+      var allDone = d.ex.every(function (_, i) { return state[key(day, i)]; });
+      if (allDone) celebrate(day);
+    }
+  }
+
+  function updateDayProgress(day, panel) {
+    var d = program[day];
+    var total = d.ex.length;
+    var done = d.ex.filter(function (_, i) { return state[key(day, i)]; }).length;
+    var pct = (done / total) * 100;
+
+    var fill = panel.querySelector(".bar-fill");
+    if (fill) fill.style.width = pct + "%";
+
+    var prog = panel.querySelector("[data-progress]");
+    if (prog) {
+      prog.textContent = done + "/" + total;
+      prog.classList.toggle("done", done === total);
+    }
+
+    var tab = document.querySelector('.tab[data-day="' + day + '"]');
+    if (tab) tab.classList.toggle("done", done === total);
+  }
+
+  function updateWeekProgress() {
+    var total = 0, done = 0;
+    Object.keys(program).forEach(function (day) {
+      var d = program[day];
+      total += d.ex.length;
+      done += d.ex.filter(function (_, i) { return state[key(day, i)]; }).length;
+    });
+    var pct = total ? (done / total) : 0;
+    var circumference = 2 * Math.PI * 28;
+    var ring = document.getElementById("weekRing");
+    if (ring) ring.style.strokeDashoffset = circumference * (1 - pct);
+    var txt = document.getElementById("ringText");
+    if (txt) txt.textContent = Math.round(pct * 100) + "%";
+  }
+
+  function celebrate(day) {
+    var colors = ["#6366f1", "#8b5cf6", "#ec4899", "#06b6d4", "#10b981", "#f59e0b"];
+    var c = document.getElementById("celebration");
+    for (var i = 0; i < 45; i++) {
+      var piece = document.createElement("div");
+      piece.className = "confetti";
+      piece.style.left = Math.random() * 100 + "%";
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.animationDelay = (Math.random() * 0.35) + "s";
+      piece.style.animationDuration = (1.5 + Math.random() * 1.1) + "s";
+      var size = (6 + Math.random() * 6) + "px";
+      piece.style.width = size;
+      piece.style.height = size;
+      c.appendChild(piece);
+      (function (p) {
+        setTimeout(function () { if (p.parentNode) p.parentNode.removeChild(p); }, 3000);
+      })(piece);
+    }
+
+    var toast = document.getElementById("toast");
+    toast.textContent = "🎉 " + day + " tamamlandı!";
+    toast.classList.add("show");
+    setTimeout(function () { toast.classList.remove("show"); }, 2400);
+  }
+
+  // Weekly auto-reset (Pazartesi sabahı)
+  function getMondayStr(d) {
+    var t = new Date(d);
+    var day = t.getDay() || 7;
+    t.setDate(t.getDate() - day + 1);
+    return t.getFullYear() + "-" +
+      String(t.getMonth() + 1).padStart(2, "0") + "-" +
+      String(t.getDate()).padStart(2, "0");
+  }
+
+  (function () {
+    var mondayStr = getMondayStr(now);
+    var lastMonday = null;
+    try { lastMonday = localStorage.getItem("last_monday_v2"); } catch (e) {}
+    if (lastMonday !== mondayStr) {
+      state = {};
+      try { localStorage.setItem(STORAGE_KEY, "{}"); } catch (e) {}
+      try { localStorage.setItem("last_monday_v2", mondayStr); } catch (e) {}
+      document.querySelectorAll(".ex").forEach(function (e) { e.classList.remove("done"); });
+      document.querySelectorAll(".panel").forEach(function (p) {
+        if (p.dataset.day) updateDayProgress(p.dataset.day, p);
+      });
+      updateWeekProgress();
+    }
+  })();
+})();
+</script>
+</body>
+</html>
